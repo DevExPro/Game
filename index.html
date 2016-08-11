@@ -36,7 +36,17 @@
 
 <p> </p>
 <a class="mouse_animation"> </a>
-<script> var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }); </script>
+<script> var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+function preload () {
+  alert("Loading");
+}
+function create () {
+  alert("Creating");
+}
+function update () {
+  alert("Updating");
+}
+</script>
       </section>
     </div>
 
