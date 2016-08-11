@@ -45,8 +45,8 @@ table {
 }
 
 canvas {
-  left: -400px;
-  margin: 20px;
+  position: relative;
+  left: 400px;
   
 }
 
@@ -57,7 +57,7 @@ Theme Styles
 body {
   box-sizing: border-box;
   color:#373737;
-  background: #212121;
+  background: #152735;
   font-size: 16px;
  /* font-family: 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;*/
  font-family: "Century Gothic", sans-serif;
