@@ -44,6 +44,7 @@ function create () {
    player = game.add.sprite(400, 600, 'star');
    cursors = game.input.keyboard.createCursorKeys();
    game.physics.arcade.enable(player);
+   game.world.setBounds(0, 0, 1200, 600);
 }
 function update () {
   player.body.velocity.x = 0;
