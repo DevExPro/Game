@@ -362,11 +362,6 @@ Full-Width Styles
   background: url(../images/Munch.gif);
 }
 
-.game_view {
-  margin-left:20px;
-  background: #660066;
-}
-
 .zip_download_link:hover {
   background: url(../images/sprite_download.png) no-repeat top left;
 }
