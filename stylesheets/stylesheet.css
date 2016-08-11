@@ -363,7 +363,7 @@ Full-Width Styles
 }
 
 .game_view {
-  margin-left:20px;
+  left: 400px;
   background: #660066;
 }
 
