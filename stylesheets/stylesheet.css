@@ -296,9 +296,8 @@ Full-Width Styles
 }
 
 #header_wrap {
-  background: #202020;
- /* background: url('../images/IMG_3424.JPG') 0% -20%;
-  background-size: 100%;
+  background: rgba(0, 0, 0, 0);;
+ /*  background-size: 100%;
  background: #004d4d;
   background: -moz-linear-gradient(top, #001a1a, #004d4d);
   background: -webkit-linear-gradient(top, #001a1a, #004d4d);
