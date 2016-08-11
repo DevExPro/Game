@@ -45,7 +45,7 @@ table {
 }
 
 canvas {
-  left: 400px;
+  left: -400px;
   margin: 20px;
   
 }
