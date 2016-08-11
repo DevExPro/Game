@@ -44,6 +44,10 @@ table {
   border-spacing: 0;
 }
 
+canvas {
+  left: 400px;
+}
+
 /*******************************************************************************
 Theme Styles
 *******************************************************************************/
@@ -363,8 +367,7 @@ Full-Width Styles
 }
 
 .game_view {
-  left: 400px;
-  background: #660066;
+  left: 600px;
 }
 
 .zip_download_link:hover {
