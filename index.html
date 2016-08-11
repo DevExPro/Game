@@ -5,6 +5,7 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Work : ">
+    <script type="text/javascript" src="phaser/build/phaser.min.js"></script>
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -28,22 +29,32 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
+<!--    <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
 <h3>
 <a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>  </h3>
 
 <p> </p>
-<a class="mouse_animation"> </a>
+<a class="mouse_animation"> </a>-->
+<script> var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+function preload () {
+  game.load.image('star', '../phaser/assets/star.png');
+}
+function create () {
+  game.add.sprite(0, 0, 'star');
+}
+function update () {
+}
+</script> <!--
       </section>
-    </div>
+    </div>-->
 
     <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
+ <!--   <div id="footer_wrap" class="outer">
       <footer class="inner">
         
       </footer>
-    </div>
+    </div>-->
 
     
 
