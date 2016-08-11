@@ -46,7 +46,6 @@ table {
 
 canvas {
   position: relative;
-  max-width: 640px;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -368,10 +367,6 @@ Full-Width Styles
   background: url(../images/Munch.gif);
 }
 
-.game_view {
-  left: 600px;
-}
-
 .zip_download_link:hover {
   background: url(../images/sprite_download.png) no-repeat top left;
 }
@@ -381,7 +376,7 @@ Full-Width Styles
 }
 
 #main_content_wrap {
-  background: #ffffea;
+  background: #dadada;
  /* border-top: 1px solid #111;
   border-bottom: 1px solid #111;*/
 }
