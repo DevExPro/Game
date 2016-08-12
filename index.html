@@ -50,8 +50,8 @@ function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
-  left = game.add.sprite(player.body.x, player.body.y, 'fire');
-  right = game.add.sprite(player.body.x, player.body.y, 'fire');
+  left = game.add.sprite(395, 500, 'fire');
+  right = game.add.sprite(405, 500, 'fire');
   
   enemies = game.add.group();
     enemies.enableBody = true;
