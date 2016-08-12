@@ -84,7 +84,7 @@ function create () {
 
 function update () {
 
-    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, player);
+    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player);
 
     if (cursors.up.isDown)
     {
