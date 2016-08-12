@@ -72,7 +72,7 @@ function update () {
     {
         player.body.velocity.y = 500;
     }
-    if (player.body.y >= 600 && player.body.y <= 0)
+    if (player.body.y >= 600 || player.body.y <= 0)
     {
       player.body.velocity.y = 0;
     }
