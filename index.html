@@ -61,13 +61,13 @@ function update () {
 
     if (cursors.up.isDown)
     {
-       // game.physics.arcade.accelerationFromRotation(player.rotation, 300, player.body.acceleration);
-        player.body.velocity.y = -400;
+       game.physics.arcade.accelerationFromRotation(player.rotation, -300, player.body.acceleration);
+        //player.body.velocity.y = -400;
     }
-   /* else
+   else
     {
        player.body.acceleration.set(0);
-    }*/
+    }
     
     if (cursors.left.isDown)
     {
