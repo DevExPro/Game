@@ -37,9 +37,7 @@
 <p> </p>
 <a class="mouse_animation"> </a>-->
 <script> var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
-var player;
-var background;
-var cursors;
+
 function preload () {
   game.load.image('background', '../images/Strrs.jpg');
   game.load.image('ship2', '../images/ship2.png');
@@ -54,7 +52,7 @@ function create () {
    player.body.collideWorldBounds = true;
    
    player.anchor.set(0.5, 0.5);
-   player.body.drag.set(70);
+   //player.body.drag.set(70);
    //player.body.maxVelocity.set(200);
 }
 function update () {
@@ -68,7 +66,7 @@ function update () {
     }
     else
     {
-       sprite.body.acceleration.set(0);
+       player.body.acceleration.set(0);
     }
     
     if (cursors.left.isDown)
@@ -85,7 +83,7 @@ function update () {
     }
     else
     {
-        sprite.body.angularVelocity = 0;
+        player.body.angularVelocity = 0;
     }
 
     
