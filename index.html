@@ -40,12 +40,12 @@
 
 function preload () {
   game.load.image('background', '../images/Strrs.jpg');
-  game.load.image('ship2', '../images/ship2.png');
   game.load.image('playerFire', '../images/pewpew.png');
+  game.load.image('ship2', '../images/ship2.png');
 }
 function create () {
   background = game.add.sprite(0, 0, 'background');
-  
+  weapon = game.add.weapon(30, 'playerFire');
    player = game.add.sprite(400, 500, 'ship2');
    
    //game.camera.follow(player);
@@ -55,10 +55,9 @@ function create () {
    
    player.body.collideWorldBounds = true;
    player.anchor.setTo(0.5, 0.5);
-   player.body.drag.set(70);
+   player.body.drag.set(55);
    player.body.maxVelocity.set(300);
    
-   weapon = game.add.weapon(30, 'playerFire');
    //weapon.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
    //weapon.bulletLifespan = 2000;
    weapon.bulletSpeed = 600;
