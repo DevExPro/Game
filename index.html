@@ -45,10 +45,12 @@ function preload () {
   game.load.image('ship2', '../images/ship2.png');
   game.load.image('enemy', '../images/enemy1.png');
 }
+
 function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
+ // booster = game.add.booster(0, 0,)
   
   enemies = game.add.group();
     enemies.enableBody = true;
@@ -75,7 +77,11 @@ function create () {
    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
 }
+
+
 function update () {
+
+    game.physics.arcade.moveToObject(enemies, player, 200);
 
     if (cursors.up.isDown)
     {
