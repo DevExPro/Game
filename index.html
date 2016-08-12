@@ -50,8 +50,8 @@ function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
-  booster = game.add.booster(1, 'fire');
-  booster = game.add.booster(1, 'fire');
+  left = game.add.sprite(player.body.x, player.body.y, 'fire');
+  right = game.add.sprite(player.body.x, player.body.y, 'fire');
   
   enemies = game.add.group();
     enemies.enableBody = true;
@@ -76,7 +76,8 @@ function create () {
    weapon.fireRate = 100;
    weapon.trackSprite(player, 0, 0, true);
    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-   booster.trackStrite(player, 0, 0, true);
+   left.trackStrite(player, -10, 20, true);
+   right.trackStrite(player, 10, 20, true);
    
 }
 
