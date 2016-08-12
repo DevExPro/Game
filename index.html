@@ -42,9 +42,9 @@ function preload () {
   game.load.image('star', '../phaser/assets/star.png');
 }
 function create () {
-  background = game.add.Sprite(0, 0, 'background');
+  background = game.add.sprite(0, 0, 'background');
    player = game.add.sprite(400, 500, 'star');
-   game.camera.follow(player);
+   //game.camera.follow(player);
    cursors = game.input.keyboard.createCursorKeys();
    game.physics.arcade.enable(player);
    game.world.setBounds(0, 0, 1200, 600);
