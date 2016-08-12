@@ -41,7 +41,7 @@
 function preload () {
   game.load.image('background', '../images/Strrs.jpg');
   game.load.image('playerFire', '../images/pewpew.png');
-  game.load.image('booster', '../images/boosters1.png');
+  game.load.image('fire', '../images/boosters1.png');
   game.load.image('ship2', '../images/ship2.png');
   game.load.image('enemy', '../images/enemy1.png');
 }
@@ -50,7 +50,8 @@ function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
- // booster = game.add.booster(0, 0,)
+  booster = game.add.booster(1, 'fire');
+  booster = game.add.booster(1, 'fire');
   
   enemies = game.add.group();
     enemies.enableBody = true;
@@ -75,13 +76,14 @@ function create () {
    weapon.fireRate = 100;
    weapon.trackSprite(player, 0, 0, true);
    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+   booster.trackStrite(player, 0, 0, true);
    
 }
 
 
 function update () {
 
-    game.physics.arcade.moveToObject(enemies, player, 200);
+    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, player, 200, 200);
 
     if (cursors.up.isDown)
     {
