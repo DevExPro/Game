@@ -50,6 +50,7 @@ function create () {
    game.physics.arcade.enable(player);
    game.world.setBounds(0, 0, 1200, 600);
    player.body.collideWorldBounds = true;
+   player.body.facing = 300;
    
    player.anchor.setTo(0.5, 0.5);
    player.body.drag.set(70);
