@@ -41,13 +41,20 @@
 function preload () {
   game.load.image('background', '../images/Strrs.jpg');
   game.load.image('playerFire', '../images/pewpew.png');
+  game.load.image('booster', '../images/boosters1.png');
   game.load.image('ship2', '../images/ship2.png');
+  game.load.image('enemy1', '../images/enemy1.png');
 }
 function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
-   player = game.add.sprite(400, 500, 'ship2');
-   
+  player = game.add.sprite(400, 500, 'ship2');
+  
+  for (var i = 0; i < 50; i++)
+    {
+        var enemy = enemy.create(game.world.randomX, game.world.randomY, 'enemy1');
+    }
+
    //game.camera.follow(player);
    cursors = game.input.keyboard.createCursorKeys();
    game.physics.arcade.enable(player);
