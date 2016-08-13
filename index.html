@@ -190,13 +190,11 @@ function fireBullet () {
     if (game.time.now > bulletTime)
     {
         bullet = bullets.getFirstExists(false);
-        bullet.body.x = player.body.x;
-        bullet.body.y = player.body.y;
         bullet.rotation = player.rotation;
 
         if (bullet)
         {
-            bullet.reset(player.x + 6, player.y - 8);
+            bullet.reset(player.x, player.y);
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
           //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
@@ -228,6 +226,7 @@ function playerHit (enemy, player) {
      {
          live.kill();
      }
+     alert("Hit! set the timer");
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
  /* if(lives.countLiving() < 1)
