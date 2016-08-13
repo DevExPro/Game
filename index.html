@@ -132,7 +132,7 @@ function update () {
     
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
 
-    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 200);
+    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
     
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
@@ -148,6 +148,8 @@ function update () {
     
 	game.physics.arcade.collide(enemies);
 	game.physics.arcade.collide(player);
+	
+	
 
     if (cursors.up.isDown)
     {
@@ -163,7 +165,6 @@ function update () {
     if (cursors.left.isDown)
     {
         player.body.angularVelocity = -300;
-        bullets.body.angularVelocity = -300;
 
        // player.body.velocity.x = -400;
        // player.scale.x = 1;
@@ -171,14 +172,12 @@ function update () {
     else if (cursors.right.isDown)
     {
         player.body.angularVelocity = 300;
-        bullets.body.angularVelocity = 300;
         //player.body.velocity.x = 400;
      //   player.scale.x = -1;
     }
     else
     {
         player.body.angularVelocity = 0;
-        bullets.body.angularVelocity = 0;
     }
     
     if(fireButton.isDown)
@@ -195,6 +194,7 @@ function fireBullet () {
     if (game.time.now > bulletTime)
     {
         bullet = bullets.getFirstExists(false);
+        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
 
         if (bullet)
         {
