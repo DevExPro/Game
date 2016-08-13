@@ -184,9 +184,7 @@ function fireBullet () {
         if (bullet)
         {
             bullet.reset(player.x + 6, player.y - 8);
-                   bullet.body.angularVelocity = 400;
-
-           // game.physics.arcade.velocityFromAngle(player.angle, 400, 500);
+            game.physics.arcade.velocityFromAngle(player.angle, 400, 500);
           //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
             
@@ -214,7 +212,7 @@ function playerHit (enemy, player) {
     live = lives.getFirstAlive();
     if(live)
      {
-         live.kill();
+         life.kill();
      }
      
  /* if(lives.countLiving() < 1)
