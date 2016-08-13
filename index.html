@@ -252,6 +252,8 @@ function collisionHandler (bullet, enemy) {
 
     bullet.kill();
       explosion = game.add.sprite(enemy.body.x, enemy.body.y, 'boom1');
+        explosion.lifespan = 300;
+
 
     enemy.kill();
 
