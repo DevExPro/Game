@@ -251,8 +251,8 @@ function resetBullet (bullet) {
 function collisionHandler (bullet, enemy) {
 
     bullet.kill();
-      explosion = game.add.sprite(enemy.body.x, enemy.body.y, 'boom1');
-        explosion.lifespan = 300;
+      explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
+        explosion.lifespan = 30;
 
 
     enemy.kill();
