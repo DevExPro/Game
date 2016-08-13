@@ -67,14 +67,14 @@ function create () {
   emitterLeft = game.add.emitter(0, 0, 1000);
   emitterRight = game.add.emitter(0, 0, 1000);
   emitterLeft.makeParticles('fire');
-  emitterRight.makeParticles('Fire');
+  emitterRight.makeParticles('fire');
   player.addChild(emitterLeft);
   player.addChild(emitterRight);
-  emitterLeft.y = 20;
-  emitterLeft.x = -15;
+  emitterLeft.y = 19;
+  emitterLeft.x = -10;
   
-    emitterRight.y = -20;
-  emitterRight.x = -15;
+    emitterRight.y = -19;
+  emitterRight.x = -10;
   
   emitterLeft.lifespan = 300;
   emitterRight.lifespan = 300;
