@@ -54,6 +54,13 @@ function create () {
   background = game.add.sprite(0, 0, 'background');
   //weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
+  
+  lives = game.add.group();
+  for(var i = 0; i < 3; ++i)
+  {
+      life = lives.create(1149 + 17(i), 2, 'heart');
+  }
+  
   game.physics.arcade.enableBody(player);
   emitter = game.add.emitter(0, 0, 1000);
   emitter.makeParticles('fire');
@@ -65,7 +72,6 @@ function create () {
   emitter.maxParticleSpeed = new Phaser.Point(-100, 50);
   emitter.minParticleSpeed = new Phaser.Point(-200, -50);
   
-  lives = game.add.group();
   
     
   
@@ -176,7 +182,9 @@ function fireBullet () {
         if (bullet)
         {
             bullet.reset(player.x + 6, player.y - 8);
-            game.physics.arcade.velocityFromAngle(player.angle, 300, bullet.body.velocity);
+                   bullet.body.angularVelocity = 400;
+
+           // game.physics.arcade.velocityFromAngle(player.angle, 400, 500);
           //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
             
