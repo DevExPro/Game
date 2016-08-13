@@ -113,7 +113,7 @@ function create () {
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
-        b.anchor.setTo(0, 0.5);
+        b.anchor.setTo(-.5, 0.5);
         b.exists = false;
         b.visible = false;
         b.checkWorldBounds = true;
@@ -202,7 +202,7 @@ function fireBullet () {
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
-            bulletTime = game.time.now + 150;
+            bulletTime = game.time.now + 125;
             
         }
     }
@@ -226,6 +226,7 @@ function collisionHandler (bullet, enemy) {
 
 function playerHit (enemy, player) {
     hit = 1;
+    player.tint = 0xff0000;
     lifeHeart = lives.getFirstAlive();
     if(lifeHeart)
      {
