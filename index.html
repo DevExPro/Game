@@ -257,7 +257,11 @@ function collisionHandler (bullet, enemy) {
 
     enemy.kill();
 
-
+    if(enemies.countLiving() < 1)
+     {
+      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+      text = game.add.text(0,0, "Wiiiiinnnner", style);
+     }
 }
 
 function playerHit (player, enemy) {
