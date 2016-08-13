@@ -222,9 +222,9 @@ function collisionHandler (bullet, enemy) {
 function playerHit (enemy, player) {
     hit = 1;
     live = lives.getFirstAlive();
-    if(lives)
+    if(live)
      {
-         lives.kill();
+         live.kill();
      }
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
