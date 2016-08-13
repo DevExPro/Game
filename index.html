@@ -190,6 +190,8 @@ function fireBullet () {
     if (game.time.now > bulletTime)
     {
         bullet = bullets.getFirstExists(false);
+        bullet.body.x = player.body.x;
+        bullet.body.y = player.body.y;
         bullet.rotation = player.rotation;
 
         if (bullet)
@@ -221,12 +223,12 @@ function collisionHandler (bullet, enemy) {
 
 function playerHit (enemy, player) {
     hit = 1;
-    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
     live = lives.getFirstAlive();
     if(live)
      {
          live.kill();
      }
+    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
  /* if(lives.countLiving() < 1)
   {
