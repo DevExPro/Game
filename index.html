@@ -64,15 +64,25 @@ function create () {
 
   ////////////////// Emitter section //////////////////
   game.physics.arcade.enableBody(player);
-  emitter = game.add.emitter(0, 0, 1000);
-  emitter.makeParticles('fire');
-  player.addChild(emitter);
-  emitter.y = 0;
-  emitter.x = -15;
+  emitterLeft = game.add.emitter(0, 0, 1000);
+  emitterRight = game.add.emitter(0, 0, 1000);
+  emitterLeft.makeParticles('fire');
+  emitterRight.makeParticles('Fire');
+  player.addChild(emitterLeft);
+  player.addChild(emitterRight);
+  emitterLeft.y = 20;
+  emitterLeft.x = -15;
   
-  emitter.lifespan = 300;
-  emitter.maxParticleSpeed = new Phaser.Point(-100, 50);
-  emitter.minParticleSpeed = new Phaser.Point(-200, -50);
+    emitterRight.y = -20;
+  emitterRight.x = -15;
+  
+  emitterLeft.lifespan = 300;
+  emitterRight.lifespan = 300;
+  emitterRight.maxParticleSpeed = new Phaser.Point(-100, 50);
+  emitterRight.minParticleSpeed = new Phaser.Point(-200, -50);
+
+  emitterLeft.maxParticleSpeed = new Phaser.Point(-100, 50);
+  emitterLeft.minParticleSpeed = new Phaser.Point(-200, -50);
   
   
     
@@ -91,6 +101,7 @@ function create () {
     ////////////// Player Attributes Sction /////////////////
 
     hit = 0;
+    flashPlayer = 0;
 
    //game.camera.follow(player);
    cursors = game.input.keyboard.createCursorKeys();
@@ -149,7 +160,8 @@ function update () {
     if (cursors.up.isDown)
     {
        game.physics.arcade.accelerationFromRotation(player.rotation, 300, player.body.acceleration);
-       emitter.emitParticle();
+       emitterLeft.emitParticle();
+       emitterRight.emitParticle();
         //player.body.velocity.y = -400;
     }
     else
@@ -160,6 +172,7 @@ function update () {
     if (cursors.left.isDown)
     {
         player.body.angularVelocity = -300;
+               emitterLeft.emitParticle();
 
        // player.body.velocity.x = -400;
        // player.scale.x = 1;
@@ -167,6 +180,8 @@ function update () {
     else if (cursors.right.isDown)
     {
         player.body.angularVelocity = 300;
+               emitterRight.emitParticle();
+
         //player.body.velocity.x = 400;
      //   player.scale.x = -1;
     }
@@ -179,6 +194,21 @@ function update () {
     {
          fireBullet();
     }
+    if(hit == 1)
+    {
+        if(flashPlayer > 5)
+        {
+            player.visible = false;
+            flashPlayer = 0;
+        }
+        else
+        {
+            player.visible = true;
+            ++flashPlayer;
+        }
+        
+    }
+    
 }
     
     function render() {
@@ -226,7 +256,7 @@ function collisionHandler (bullet, enemy) {
 
 function playerHit (player, enemy) {
     hit = 1;
-    player.tint = 0xff0000;
+    player.tint = 0xffffff;
     lifeHeart = lives.getFirstAlive();
     if(lifeHeart)
      {
