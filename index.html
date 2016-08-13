@@ -49,6 +49,7 @@ function preload () {
 
 var bulletTime = 0;
 var bullet;
+var player;
 
 function create () {
   background = game.add.sprite(0, 0, 'background');
@@ -212,7 +213,7 @@ function playerHit (enemy, player) {
     live = lives.getFirstAlive();
     if(live)
      {
-         life.kill();
+         live.kill();
      }
      
  /* if(lives.countLiving() < 1)
