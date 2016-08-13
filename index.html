@@ -109,6 +109,8 @@ function create () {
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
+   //   emitter.y = 0;
+   // emitter.x = -15;
     
    for (var i = 0; i < 20; i++)
     {
@@ -195,11 +197,11 @@ function fireBullet () {
 
         if (bullet)
         {
-            bullet.reset(player.x - 20, player.y - 20);
+
+            bullet.reset(player.x, player.y);
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
-          //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
             
         }
@@ -227,9 +229,10 @@ function playerHit (enemy, player) {
     lifeHeart = lives.getFirstAlive();
     if(lifeHeart)
      {
+         console.log("Remove a life.");
          lifeHeart.kill();
      }
-     console.log("Timer started");
+   //  console.log("Timer started");
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
  /* if(lives.countLiving() < 1)
@@ -241,7 +244,7 @@ function playerHit (enemy, player) {
 function resetHit () {
     game.time.events.remove(hitTimer);
     hit = 0;
-    console.log("Timer is removed.");
+   // console.log("Timer is removed.");
 }
   /*  else if (cursors.down.isDown)
     {
