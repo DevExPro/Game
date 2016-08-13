@@ -67,7 +67,7 @@ function create () {
     {
         var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
     }
-    
+    enemies.setAll('body.collideWorldBounds', true);
     enemies.setAll('body.bounce.x', 1);
 	enemies.setAll('body.bounce.y', 1);
 
