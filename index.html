@@ -194,7 +194,8 @@ function fireBullet () {
     if (game.time.now > bulletTime)
     {
         bullet = bullets.getFirstExists(false);
-        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
+        bullet.rotation = player.rotation;
+        //bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
 
         if (bullet)
         {
