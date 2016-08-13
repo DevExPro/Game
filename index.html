@@ -166,7 +166,7 @@ function fireBullet () {
 
         if (bullet)
         {
-            bullet.reset(sprite.x + 6, sprite.y - 8);
+            bullet.reset(player.x + 6, player.y - 8);
             bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
         }
