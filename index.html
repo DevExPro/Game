@@ -191,11 +191,14 @@ function fireBullet () {
     {
         bullet = bullets.getFirstExists(false);
         bullet.rotation = player.rotation;
+        
 
         if (bullet)
         {
-            bullet.reset(player.x, player.y);
+            bullet.reset(player.x - 20, player.y - 20);
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
+            //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
+
           //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
             
@@ -221,11 +224,12 @@ function collisionHandler (bullet, enemy) {
 
 function playerHit (enemy, player) {
     hit = 1;
-    live = lives.getFirstAlive();
+    lifeHeart = lives.getFirstAlive();
     if(live)
      {
-         live.kill();
+         lifeHeart.kill();
      }
+     console.log("Timer started");
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
  /* if(lives.countLiving() < 1)
@@ -237,6 +241,7 @@ function playerHit (enemy, player) {
 function resetHit () {
     game.time.events.remove(hitTimer);
     hit = 0;
+    console.log("Timer is removed.");
 }
   /*  else if (cursors.down.isDown)
     {
