@@ -58,12 +58,10 @@ function create () {
   
   ///////////////// Player Lives Section ///////////
   lives = game.add.group();
-  for(var i = 0; i < 3; ++i)
-  {
-      life = lives.create(1149, 2, 'heart');
-      life = lives.create(1166, 2, 'heart');
-      life = lives.create(1183, 2, 'heart');
-  }
+  life = lives.create(1149, 2, 'heart');
+  life = lives.create(1166, 2, 'heart');
+  life = lives.create(1183, 2, 'heart');
+
   ////////////////// Emitter section //////////////////
   game.physics.arcade.enableBody(player);
   emitter = game.add.emitter(0, 0, 1000);
@@ -140,9 +138,8 @@ function update () {
     //{
    if(hit == 0)
     {
-        game.physics.arcade.collide(enemies, player, playerHit, null, this);
+        game.physics.arcade.overlap(enemies, player, playerHit, null, this);
     }
-   // game.time.events.add(Phaser.Timer.SECOND * 4, , this);
     
 	game.physics.arcade.collide(enemies);
 	game.physics.arcade.collide(player);
@@ -194,11 +191,12 @@ function fireBullet () {
         bullet = bullets.getFirstExists(false);
         bullet.rotation = player.rotation;
         
+        
 
         if (bullet)
         {
 
-            bullet.reset(player.x, player.y);
+            bullet.reset(player.x -20, player.y -20);
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
@@ -229,22 +227,19 @@ function playerHit (enemy, player) {
     lifeHeart = lives.getFirstAlive();
     if(lifeHeart)
      {
-         console.log("Remove a life.");
          lifeHeart.kill();
      }
-   //  console.log("Timer started");
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
      
  /* if(lives.countLiving() < 1)
-  {
-      
-  }*/
+     {
+         
+     }*/
 }
 
 function resetHit () {
     game.time.events.remove(hitTimer);
     hit = 0;
-   // console.log("Timer is removed.");
 }
   /*  else if (cursors.down.isDown)
     {
