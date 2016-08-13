@@ -49,16 +49,13 @@ function preload () {
 function create () {
   background = game.add.sprite(0, 0, 'background');
   weapon = game.add.weapon(30, 'playerFire');
-  //left = game.add.sprite(375, 490, 'fire');
-  //right = game.add.sprite(375, 500, 'fire');
+  player = game.add.sprite(400, 500, 'ship2');
   game.physics.arcade.enableBody(player);
   emitter = game.add.emitter(0, 0, 1000);
   emitter.makeParticles('fire');
   player.addChild(emitter);
   emitter.y = 0;
   emitter.x = -15;
-  
-  player = game.add.sprite(400, 500, 'ship2');
   
   emitter.lifespan = 300;
   emitter.maxParticleSpeed = new Phaser.Point(-100, 50);
@@ -70,6 +67,9 @@ function create () {
     {
         var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
     }
+    
+    sprites.setAll('body.bounce.x', 1);
+	sprites.setAll('body.bounce.y', 1);
 
    //game.camera.follow(player);
    cursors = game.input.keyboard.createCursorKeys();
