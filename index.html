@@ -134,11 +134,11 @@ function update () {
 
     enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 200);
     
-    timeBetweenCollision = game.timer(game);
-    if(timeBetweenCollision > 10)
-    {
+   // timeBetweenCollision = game.timer(game);
+    //if(timeBetweenCollision > 10)
+    //{
         game.physics.arcade.collide(enemies, player, playerHit, null, this);
-    }
+    //}
     
 	game.physics.arcade.collide(enemies);
 	game.physics.arcade.collide(player);
