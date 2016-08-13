@@ -80,7 +80,7 @@ function create () {
   ///////////////// Spawning Enemies //////////////////////////
   enemies = game.add.group();
     enemies.enableBody = true;
-  for (var i = 0; i < 6; i++)
+  for (var i = 0; i < 2; i++)
     {
         var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
     }
@@ -107,13 +107,13 @@ function create () {
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
-   //   emitter.y = 0;
-   // emitter.x = -15;
+
     
    for (var i = 0; i < 20; i++)
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
+        b.anchor.setTo(0.5, 0.5);
         b.exists = false;
         b.visible = false;
         b.checkWorldBounds = true;
@@ -188,6 +188,7 @@ function fireBullet () {
 
     if (game.time.now > bulletTime)
     {
+       // bullet.anchor.setTo(0.5, 0.5)
         bullet = bullets.getFirstExists(false);
         bullet.rotation = player.rotation;
         
@@ -196,7 +197,8 @@ function fireBullet () {
         if (bullet)
         {
 
-            bullet.reset(player.x -20, player.y -20);
+            bullet.reset(player.x , player.y -4);
+ 
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
