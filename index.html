@@ -68,8 +68,7 @@ function create () {
         var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
     }
     enemies.setAll('body.collideWorldBounds', true);
-    enemies.setAll('body.bounce.x', 1);
-	enemies.setAll('body.bounce.y', 1);
+
 
    //game.camera.follow(player);
    cursors = game.input.keyboard.createCursorKeys();
@@ -96,6 +95,7 @@ function create () {
 function update () {
 
     enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player);
+	game.physics.arcade.collide(enemies);
 
     if (cursors.up.isDown)
     {
