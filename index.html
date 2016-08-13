@@ -58,7 +58,7 @@ function create () {
   lives = game.add.group();
   for(var i = 0; i < 3; ++i)
   {
-      life = lives.create(1149 + 17(i), 2, 'heart');
+      life = lives.create((1149 + 17(i)), 2, 'heart');
   }
   
   game.physics.arcade.enableBody(player);
