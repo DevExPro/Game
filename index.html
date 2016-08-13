@@ -134,7 +134,11 @@ function update () {
 
     enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 200);
     
-    game.physics.arcade.collide(enemies, player, playerHit, null, this);
+    timeBetweenCollision = game.timer(game);
+    if(timeBetweenCollision > 10)
+    {
+        game.physics.arcade.collide(enemies, player, playerHit, null, this);
+    }
     
 	game.physics.arcade.collide(enemies);
 	game.physics.arcade.collide(player);
@@ -185,7 +189,7 @@ function fireBullet () {
         if (bullet)
         {
             bullet.reset(player.x + 6, player.y - 8);
-            game.physics.arcade.velocityFromAngle(player.angle, 400, 500);
+            game.physics.arcade.velocityFromAngle(player.angle, 400, bullet.body.velocity);
           //  bullet.body.velocity.y = -300;
             bulletTime = game.time.now + 150;
             
