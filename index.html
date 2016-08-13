@@ -49,6 +49,7 @@ function preload () {
 
 var bulletTime = 0;
 var bullet;
+var explosion;
 var player;
 
 function create () {
@@ -73,11 +74,11 @@ function create () {
   emitterLeft.y = 19;
   emitterLeft.x = -10;
   
-    emitterRight.y = -19;
+  emitterRight.y = -19;
   emitterRight.x = -10;
   
-  emitterLeft.lifespan = 300;
-  emitterRight.lifespan = 300;
+  emitterLeft.lifespan = 150;
+  emitterRight.lifespan = 150;
   emitterRight.maxParticleSpeed = new Phaser.Point(-100, 50);
   emitterRight.minParticleSpeed = new Phaser.Point(-200, -50);
 
@@ -194,7 +195,7 @@ function update () {
     {
          fireBullet();
     }
-    if(hit == 1)
+    if(hit == 1 && lives.countLiving() == 1)
     {
         if(flashPlayer > 5)
         {
@@ -249,6 +250,8 @@ function resetBullet (bullet) {
 function collisionHandler (bullet, enemy) {
 
     bullet.kill();
+      explosion = game.add.sprite(enemy.body.x, enemy.body.y, 'boom1');
+
     enemy.kill();
 
 
@@ -263,11 +266,12 @@ function playerHit (player, enemy) {
          lifeHeart.kill();
      }
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
-     
- /* if(lives.countLiving() < 1)
+      if(lives.countLiving() < 1)
      {
-         
-     }*/
+      player.kill();  
+      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+      text = game.add.text(0,0, "GAME OVER", style);
+     }
 }
 
 function resetHit () {
