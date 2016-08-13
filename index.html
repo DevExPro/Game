@@ -137,6 +137,11 @@ function update () {
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
     //{
+   /* hit = 0;
+    if(hit == 0)
+    {
+        
+    }*/
         game.physics.arcade.collide(enemies, player, playerHit, null, this);
     //}
    // game.time.events.add(Phaser.Timer.SECOND * 4, game.physics.arcade.collide(enemies, player, playerHit, null, this), this);
@@ -158,7 +163,7 @@ function update () {
     if (cursors.left.isDown)
     {
         player.body.angularVelocity = -300;
-        bullet.body.angularVelocity = -300;
+        bullets.body.angularVelocity = -300;
 
        // player.body.velocity.x = -400;
        // player.scale.x = 1;
@@ -166,14 +171,14 @@ function update () {
     else if (cursors.right.isDown)
     {
         player.body.angularVelocity = 300;
-        bullet.body.angularVelocity = 300;
+        bullets.body.angularVelocity = 300;
         //player.body.velocity.x = 400;
      //   player.scale.x = -1;
     }
     else
     {
         player.body.angularVelocity = 0;
-        bullet.body.angularVelocity = 0;
+        bullets.body.angularVelocity = 0;
     }
     
     if(fireButton.isDown)
@@ -219,6 +224,7 @@ function collisionHandler (bullet, enemy) {
 }
 
 function playerHit (enemy, player) {
+    hit = 1;
     live = lives.getFirstAlive();
     if(live)
      {
