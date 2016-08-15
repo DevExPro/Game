@@ -52,6 +52,8 @@ var bulletTime = 0;
 var bullet;
 var explosion;
 var player;
+var timer;
+
 
 function create () {
   background = game.add.sprite(0, 0, 'background');
@@ -90,15 +92,39 @@ function create () {
     
   
   ///////////////// Spawning Enemies //////////////////////////
+  var totalEnemies = 5;
+
   enemies = game.add.group();
     enemies.enableBody = true;
-  for (var i = 0; i < 2; i++)
-    {
-        var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
-    }
+    
+    
 
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
+    for(j = 0; j < totalEnemies; j++)
+    {
+        spawnTimer = game.time.events.add(500 * j, spawnEnemy, this);
+    }
+    //  Create our Timer
+   /* timer = game.time.create(false);
+    timer.loop(500, spawnEnemy, this);
+    totalEnemies++;*/
+  /*  for( i = 0; i < 5; i++)
+    {
+        spawnTimer.start();
+        
+    }
+    
+    if(totalEnemies == 5){
+        spawnTimer.pause();
+    }*/
+
+  /*for (var i = 0; i < 2; i++)
+    {
+      //  
+    }*/
+    
+   // timer.start();
     
     ////////////// Player Attributes Sction /////////////////
 
@@ -214,6 +240,8 @@ function update () {
 }
     
     function render() {
+           // game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
+   // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
 }
 
 /////////////////// Bullet Functions ///////////////////////
@@ -221,7 +249,6 @@ function fireBullet () {
 
     if (game.time.now > bulletTime)
     {
-       // bullet.anchor.setTo(0.5, 0.5)
         bullet = bullets.getFirstExists(false);
         bullet.rotation = player.rotation;
         
@@ -258,7 +285,7 @@ function collisionHandler (bullet, enemy) {
 
     enemy.kill();
 
-    if(enemies.countLiving() < 1)
+    if(enemies.countDead() == 5)
      {
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
       text = game.add.text(0,0, "Wiiiiinnnner", style);
@@ -285,6 +312,13 @@ function playerHit (player, enemy) {
 function resetHit () {
     game.time.events.remove(hitTimer);
     hit = 0;
+}
+
+//////////////////////// Spawn Enemies Function ///////////////////////
+
+function spawnEnemy (){
+        var enemy = enemies.create(1000, 0, 'enemy');
+
 }
   /*  else if (cursors.down.isDown)
     {
