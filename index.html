@@ -53,6 +53,7 @@ var bullet;
 var explosion;
 var player;
 var timer;
+var gameOver = 0;
 
 
 function create () {
@@ -218,11 +219,11 @@ function update () {
         player.body.angularVelocity = 0;
     }
     
-    if(fireButton.isDown)
+    if(fireButton.isDown && gameOver != 1)
     {
          fireBullet();
     }
-    if(hit == 1 && lives.countLiving() == 1)
+    if(hit == 1 && lives.countLiving() >= 1)
     {
         if(flashPlayer > 5)
         {
@@ -300,10 +301,11 @@ function playerHit (player, enemy) {
      {
          lifeHeart.kill();
      }
-    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 4, resetHit, this);
+    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this);
       if(lives.countLiving() < 1)
      {
-      player.kill();  
+      player.kill();
+      gameOver = 1;
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
       text = game.add.text(0,0, "GAME OVER", style);
      }
