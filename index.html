@@ -43,7 +43,7 @@ function preload () {
   game.load.image('bullet', '../images/pewpew.png');
   game.load.image('fire', '../images/boosters4.png');
   game.load.image('ship2', '../images/ship2.png');
-  game.load.image('boom1', '../images/boom1.png')
+  game.load.image('boom1', '../images/boom1.png');
   game.load.image('enemy', '../images/enemy1.png');
   game.load.image('heart', '../images/Life.png');
 }
@@ -106,26 +106,7 @@ function create () {
     {
         spawnTimer = game.time.events.add(500 * j, spawnEnemy, this);
     }
-    //  Create our Timer
-   /* timer = game.time.create(false);
-    timer.loop(500, spawnEnemy, this);
-    totalEnemies++;*/
-  /*  for( i = 0; i < 5; i++)
-    {
-        spawnTimer.start();
-        
-    }
-    
-    if(totalEnemies == 5){
-        spawnTimer.pause();
-    }*/
 
-  /*for (var i = 0; i < 2; i++)
-    {
-      //  
-    }*/
-    
-   // timer.start();
     
     ////////////// Player Attributes Sction /////////////////
 
@@ -172,6 +153,8 @@ function update () {
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
 
     enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
+        enemies.rotation = this.game.physics.arcade.angleBetween(enemies, player);
+
     
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
@@ -197,22 +180,26 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
-    
-    if (cursors.left.isDown)
+    if(cursors.left.isDown && cursors.right.isDown)
+    {
+       // player.body.angularVelocity = 0;
+        emitterLeft.emitParticle();
+        emitterRight.emitParticle();
+    }
+    else if (cursors.left.isDown)
     {
         player.body.angularVelocity = -300;
-               emitterLeft.emitParticle();
-
-       // player.body.velocity.x = -400;
-       // player.scale.x = 1;
+        emitterLeft.emitParticle();
+    
+        // player.body.velocity.x = -400;
+        // player.scale.x = 1;
     }
     else if (cursors.right.isDown)
     {
         player.body.angularVelocity = 300;
-               emitterRight.emitParticle();
-
+        emitterRight.emitParticle();
         //player.body.velocity.x = 400;
-     //   player.scale.x = -1;
+        //   player.scale.x = -1;
     }
     else
     {
@@ -263,7 +250,7 @@ function fireBullet () {
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
-            bulletTime = game.time.now + 125;
+            bulletTime = game.time.now + 130;
             
         }
     }
@@ -319,7 +306,7 @@ function resetHit () {
 //////////////////////// Spawn Enemies Function ///////////////////////
 
 function spawnEnemy (){
-        var enemy = enemies.create(1000, 0, 'enemy');
+        var enemy = enemies.create(500, 200, 'enemy');
 
 }
   /*  else if (cursors.down.isDown)
