@@ -39,7 +39,7 @@
 <script> var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 function preload () {
-  game.load.image('background', '../images/Strrs.jpg');
+  game.load.image('background', '../images/starBack.jpg');
   game.load.image('bullet', '../images/pewpew.png');
   game.load.image('fire', '../images/boosters4.png');
   game.load.image('ship2', '../images/ship2.png');
@@ -53,7 +53,9 @@ var bullet;
 var explosion;
 var player;
 var timer;
+var shootTimer;
 var gameOver = 0;
+var fireMode;
 
 
 function create () {
@@ -177,54 +179,62 @@ function update () {
        emitterLeft.emitParticle();
        emitterRight.emitParticle();
         //player.body.velocity.y = -400;
+        
+        if (cursors.left.isDown && cursors.right.isUp)
+        {
+            player.body.angularVelocity = -300;
+            emitterLeft.emitParticle();
+            if(cursors.right.isDown)
+            {
+                player.body.angularVelocity = 0;
+                emitterRight.emitParticle();
+            }
+            // player.body.velocity.x = -400;
+            // player.scale.x = 1;
+        }
+        else if (cursors.right.isDown && cursors.left.isUp)
+        {
+            player.body.angularVelocity = 300;
+            emitterRight.emitParticle();
+            if(cursors.left.isDown)
+            {
+                player.body.angularVelocity = 0;
+                emitterRight.emitParticle();
+            }
+            //player.body.velocity.x = 400;
+            //   player.scale.x = -1;
+        }
     }
     else
     {
        player.body.acceleration.set(0);
     }
-     if(cursors.left.isDown && cursors.right.isDown && cursors.up.isDown)
+     if(cursors.left.isUp || cursors.right.isUp)
     {
-       // player.body.angularVelocity = 0;
-       game.physics.arcade.accelerationFromRotation(player.rotation, 300, player.body.acceleration);
-        emitterLeft.emitParticle();
-        emitterRight.emitParticle();
-    }
-    else if (cursors.left.isDown && cursors.right.isUp)
-    {
-        player.body.angularVelocity = -300;
-        emitterLeft.emitParticle();
-        if (cursors.right.isDown)
+        if (cursors.left.isDown && cursors.right.isUp)
         {
-            window.log("Adding right");
-            player.body.angularVelocity = 0;
+            player.body.angularVelocity = -300;
             emitterLeft.emitParticle();
-            emitterRight.emitParticle();
+            // player.body.velocity.x = -400;
+            // player.scale.x = 1;
         }
-        // player.body.velocity.x = -400;
-        // player.scale.x = 1;
-    }
-    else if (cursors.right.isDown && cursors.left.isUp)
-    {
-        player.body.angularVelocity = 300;
-        emitterRight.emitParticle();
-        if (cursors.left.isDown)
+        else if (cursors.right.isDown && cursors.left.isUp)
         {
-            window.log("Adding left");
-            player.body.angularVelocity = 0;
-            emitterLeft.emitParticle();
+            player.body.angularVelocity = 300;
             emitterRight.emitParticle();
+            //player.body.velocity.x = 400;
+            //   player.scale.x = -1;
         }
-        //player.body.velocity.x = 400;
-        //   player.scale.x = -1;
-    }
-    else
-    {
-        player.body.angularVelocity = 0;
+        else
+        {
+            player.body.angularVelocity = 0;
+        }
     }
     
     if(fireButton.isDown && gameOver != 1)
     {
-         fireBullet();
+        fireMode = 2;
+         preFire(fireMode);
     }
     if(hit == 1 && lives.countLiving() >= 1)
     {
@@ -244,21 +254,48 @@ function update () {
 }
     
     function render() {
-           // game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
+        //    game.debug.text('Time until event: ' + shootTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
 }
 
 /////////////////// Bullet Functions ///////////////////////
+function preFire(fireState){
+    switch (fireState)
+    {
+        case 1:
+            break;
+        case 2:
+            burstFire();
+            break;
+        case 3:
+            break;
+        default:
+    }
+}
+
+function burstFire()
+{
+    if(game.time.now > bulletTime)
+    {
+        for(var i = 0; i < 3; i++)
+        {
+            shootTimer = game.time.events.add(70 * i, fireBullet, this);
+    
+        }
+        
+        bulletTime = game.time.now + 600;
+    }
+}
 function fireBullet () {
 
-    if (game.time.now > bulletTime)
-    {
+ //   if (game.time.now > bulletTime)
+   // {
         bullet = bullets.getFirstExists(false);
         bullet.rotation = player.rotation;
         
         
 
-        if (bullet)
+        if (bullet) 
         {
 
             bullet.reset(player.x , player.y);
@@ -266,10 +303,10 @@ function fireBullet () {
             game.physics.arcade.velocityFromAngle(player.angle, 600, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
-            bulletTime = game.time.now + 130;
+           // bulletTime = game.time.now + fireRate;
             
         }
-    }
+  //  }
 
 }
 //  Called if the bullet goes out of the screen
@@ -305,13 +342,13 @@ function playerHit (player, enemy) {
          lifeHeart.kill();
      }
     hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this);
-      if(lives.countLiving() < 1)
+ /*     if(lives.countLiving() < 1)
      {
       player.kill();
       gameOver = 1;
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
       text = game.add.text(0,0, "GAME OVER", style);
-     }
+     }*/
 }
 
 function resetHit () {
