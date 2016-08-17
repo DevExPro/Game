@@ -39,14 +39,14 @@
 <script> var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 function preload () {
-  game.load.image('background', '../images/starBack.png');
+  game.load.image('background', '../images/back.png');
   game.load.image('bullet', '../images/pewpew.png');
   game.load.image('fire', '../images/boosters4.png');
   game.load.image('ship2', '../images/shipGreen.png');
   game.load.image('boom1', '../images/boom1.png');
   game.load.image('enemy', '../images/enemy1.png');
   game.load.image('heart', '../images/Life.png');
-  game.load.image('powerUp', '../images/.png');
+  game.load.image('powerUp', '../images/starPower.png');
 }
 
 var bulletTime = 0;
@@ -54,9 +54,10 @@ var bullet;
 var explosion;
 var player;
 var timer;
+var powerUp;
 var shootTimer;
-var gameOver = 0;
-var fireMode;
+var gameOver = 0; 
+var fireMode = 0;
 
 
 function create () {
@@ -153,8 +154,8 @@ function create () {
 
 
 function update () {
-    
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
+    fireMode = game.physics.arcade.overlap(player, powerUp, getPowerUp, null, this);
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
@@ -337,7 +338,8 @@ function resetBullet (bullet) {
 function collisionHandler (bullet, enemy) {
 
     bullet.kill();
-      explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
+    explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
+    game.add.sprite(enemy.body.x, enemy.body.y, 'powerUp');
         explosion.lifespan = 30;
 
 
@@ -348,6 +350,12 @@ function collisionHandler (bullet, enemy) {
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
       text = game.add.text(0,0, "Wiiiiinnnner", style);
      }
+}
+
+function getPowerUp(player, powerUp)
+{
+  
+  return 0;  
 }
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
