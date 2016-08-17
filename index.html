@@ -46,6 +46,7 @@ function preload () {
   game.load.image('boom1', '../images/boom1.png');
   game.load.image('enemy', '../images/enemy1.png');
   game.load.image('heart', '../images/Life.png');
+  game.load.image('powerUp', '../images/.png');
 }
 
 var bulletTime = 0;
@@ -248,6 +249,7 @@ function preFire(fireState){
     switch (fireState)
     {
         case 1:
+            singleShot();
             break;
         case 2:
             burstFire();
@@ -259,6 +261,13 @@ function preFire(fireState){
     }
 }
 
+function singleShot(){
+    if(game.time.now > bulletTime)
+    {
+        fireBullet(0);
+        bulletTime = game.time.now + 350;
+    }
+}
 function scatterShot(){
     var fireAngle = 0;
     if(game.time.now > bulletTime)
@@ -300,7 +309,7 @@ function fireBullet (fireAngle) {
 
             bullet.reset(player.x , player.y);
  
-            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 600, bullet.body.velocity);
+            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 650, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
