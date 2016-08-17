@@ -152,8 +152,10 @@ function update () {
     
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
 
-    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
-        enemies.rotation = this.game.physics.arcade.angleBetween(enemies, player);
+   // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
+   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
+   
+  //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
 
     
    // timeBetweenCollision = game.timer(game);
@@ -180,24 +182,38 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
-    if(cursors.left.isDown && cursors.right.isDown)
+     if(cursors.left.isDown && cursors.right.isDown && cursors.up.isDown)
     {
        // player.body.angularVelocity = 0;
+       game.physics.arcade.accelerationFromRotation(player.rotation, 300, player.body.acceleration);
         emitterLeft.emitParticle();
         emitterRight.emitParticle();
     }
-    else if (cursors.left.isDown)
+    else if (cursors.left.isDown && cursors.right.isUp)
     {
         player.body.angularVelocity = -300;
         emitterLeft.emitParticle();
-    
+        if (cursors.right.isDown)
+        {
+            window.log("Adding right");
+            player.body.angularVelocity = 0;
+            emitterLeft.emitParticle();
+            emitterRight.emitParticle();
+        }
         // player.body.velocity.x = -400;
         // player.scale.x = 1;
     }
-    else if (cursors.right.isDown)
+    else if (cursors.right.isDown && cursors.left.isUp)
     {
         player.body.angularVelocity = 300;
         emitterRight.emitParticle();
+        if (cursors.left.isDown)
+        {
+            window.log("Adding left");
+            player.body.angularVelocity = 0;
+            emitterLeft.emitParticle();
+            emitterRight.emitParticle();
+        }
         //player.body.velocity.x = 400;
         //   player.scale.x = -1;
     }
@@ -306,7 +322,7 @@ function resetHit () {
 //////////////////////// Spawn Enemies Function ///////////////////////
 
 function spawnEnemy (){
-        var enemy = enemies.create(500, 200, 'enemy');
+        var enemy = enemies.create(1000, 0, 'enemy');
 
 }
   /*  else if (cursors.down.isDown)
