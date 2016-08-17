@@ -42,7 +42,7 @@ function preload () {
   game.load.image('background', '../images/starBack.png');
   game.load.image('bullet', '../images/pewpew.png');
   game.load.image('fire', '../images/boosters4.png');
-  game.load.image('ship2', '../images/ship2.png');
+  game.load.image('ship2', '../images/shipGreen.png');
   game.load.image('boom1', '../images/boom1.png');
   game.load.image('enemy', '../images/enemy1.png');
   game.load.image('heart', '../images/Life.png');
@@ -149,6 +149,7 @@ function create () {
    //right.trackSprite(player, 10, 20, true);
    
 }
+
 
 
 function update () {
@@ -282,6 +283,9 @@ function scatterShot(){
     }
     
 }
+
+
+
 function burstFire(){
     var fireAngle = 0;
     if(game.time.now > bulletTime)
@@ -295,6 +299,9 @@ function burstFire(){
         bulletTime = game.time.now + 600;
     }
 }
+
+
+
 function fireBullet (fireAngle) {
 
  //   if (game.time.now > bulletTime)
@@ -325,7 +332,8 @@ function resetBullet (bullet) {
 
 }
 
-//  Called if the bullet hits one of the veg sprites
+
+
 function collisionHandler (bullet, enemy) {
 
     bullet.kill();
