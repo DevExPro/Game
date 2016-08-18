@@ -130,6 +130,7 @@ function create () {
 
     /////////////////// Bullets Section ////////////////////// 
     bullets = game.add.group();
+    
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -190,6 +191,7 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
+    
      if(cursors.left.isUp || cursors.right.isUp)
     {
         if (cursors.left.isDown && cursors.right.isUp)
