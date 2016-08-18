@@ -77,10 +77,10 @@ function create () {
   emitterRight.makeParticles('fire');
   player.addChild(emitterLeft);
   player.addChild(emitterRight);
-  emitterLeft.y = 19;
+  emitterLeft.y = 16;
   emitterLeft.x = -10;
   
-  emitterRight.y = -19;
+  emitterRight.y = -16;
   emitterRight.x = -10;
   
   emitterLeft.lifespan = 150;
@@ -153,7 +153,7 @@ function create () {
 
 function update () {
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
-  //  game.physics.arcade.overlap(player, powerUp, getPowerUp, null, this);
+   game.physics.arcade.overlap(player, powerUp, getPowerUp, null, this);
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
@@ -355,6 +355,7 @@ function collisionHandler (bullet, enemy) {
 
 function getPowerUp(player, powerUp)
 {
+    powerUp.kill();
   fireMode = 2;
     
 }
