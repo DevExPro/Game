@@ -139,7 +139,7 @@ function create () {
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
     
-   for (var i = 0; i < 20; i++)
+   for (var i = 0; i < 200; i++)
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
@@ -275,7 +275,7 @@ function singleShot(){
     if(game.time.now > bulletTime)
     {
         fireBullet(0);
-        bulletTime = game.time.now + 350;
+        bulletTime = game.time.now + 10;
     }
 }
 function scatterShot(){
@@ -325,7 +325,7 @@ function fireBullet (fireAngle) {
 
             bullet.reset(player.x , player.y);
  
-            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 650, bullet.body.velocity);
+            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 1500, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
