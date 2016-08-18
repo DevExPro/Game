@@ -40,7 +40,7 @@
 
 function preload () {
   game.load.image('background', '../images/back.png');
-  game.load.image('bullet', '../images/pewpew.png');
+  game.load.image('bullet', '../images/pewpew2.png');
   game.load.image('fire', '../images/emit.png');
   game.load.image('ship2', '../images/shipGreen.png');
   game.load.image('boom1', '../images/boom1.png');
@@ -334,10 +334,13 @@ function resetBullet (bullet) {
 
 
 function collisionHandler (bullet, enemy) {
-
+    var chance = 0;
     bullet.kill();
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
-    game.add.sprite(enemy.body.x, enemy.body.y, 'powerUp');
+    chance = game.rnd.integerInRange(1, 100);
+    if(chance < 20){
+        game.add.sprite(enemy.body.x, enemy.body.y, 'powerUp');
+    }
         explosion.lifespan = 30;
 
 
