@@ -44,9 +44,9 @@ function preload () {
   game.load.image('fire', '../images/boosters4.png');
   game.load.image('ship2', '../images/shipGreen.png');
   game.load.image('boom1', '../images/boom1.png');
-  game.load.image('enemy', '../images/enemy1.png');
+  game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/Life.png');
-  game.load.image('powerUp', '../images/starPower.png');
+  game.load.image('powerUp', '../images/lightning2.png');
 }
 
 var bulletTime = 0;
@@ -57,14 +57,12 @@ var timer;
 var powerUp;
 var shootTimer;
 var gameOver = 0; 
-var fireMode = 0;
-
+var fireMode;
 
 function create () {
   background = game.add.sprite(0, 0, 'background');
-  //weapon = game.add.weapon(30, 'playerFire');
   player = game.add.sprite(400, 500, 'ship2');
-  
+
   ///////////////// Player Lives Section ///////////
   lives = game.add.group();
   life = lives.create(1149, 2, 'heart');
@@ -155,7 +153,7 @@ function create () {
 
 function update () {
     game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
-    fireMode = game.physics.arcade.overlap(player, powerUp, getPowerUp, null, this);
+  //  game.physics.arcade.overlap(player, powerUp, getPowerUp, null, this);
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
@@ -221,9 +219,9 @@ function update () {
     
     if(fireButton.isDown && gameOver != 1)
     {
-        fireMode = 3;
-         preFire(fireMode);
+         preFire(3);
     }
+    
     if(hit == 1 && lives.countLiving() >= 1)
     {
         if(flashPlayer > 5)
@@ -293,7 +291,7 @@ function burstFire(){
     {
         for(var i = 0; i < 3; i++)
         {
-            shootTimer = game.time.events.add(70 * i, fireBullet, this);
+            shootTimer = game.time.events.add(70 * i, fireBullet, this, fireAngle);
     
         }
         
@@ -354,8 +352,8 @@ function collisionHandler (bullet, enemy) {
 
 function getPowerUp(player, powerUp)
 {
-  
-  return 0;  
+  fireMode = 2;
+    
 }
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
