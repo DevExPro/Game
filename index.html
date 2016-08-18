@@ -47,7 +47,7 @@ function preload () {
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
-  game.load.spritesheet('cheeta', '../images/test.png', 512, 190, 4);
+ // game.load.spritesheet('cheeta', '../images/test.png', 512, 190, 4);
 }
 
 var bulletTime = 0;
@@ -64,9 +64,9 @@ var power;
 function create () {
   background = game.add.sprite(0, 0, 'background');
   player = game.add.sprite(400, 500, 'ship2');
-  var testing = game.add.sprite(200, 100, 'cheeta');
-  var walk = testing.animations.add('walk');
-  testing.animations.play('walk', 15, true);
+//  var testing = game.add.sprite(200, 100, 'cheeta');
+ // var walk = testing.animations.add('walk');
+ // testing.animations.play('walk', 15, true);
 
   ///////////////// Player Lives Section ///////////
   lives = game.add.group();
