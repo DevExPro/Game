@@ -130,7 +130,7 @@ function create () {
 
     /////////////////// Bullets Section ////////////////////// 
     bullets = game.add.group();
-    
+    fireMode = 1;
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -158,7 +158,7 @@ function create () {
 
 
 function update () {
-    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
+   game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
@@ -191,7 +191,6 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
-    
      if(cursors.left.isUp || cursors.right.isUp)
     {
         if (cursors.left.isDown && cursors.right.isUp)
@@ -226,7 +225,7 @@ function update () {
     
     if(fireButton.isDown && gameOver != 1)
     {
-         preFire(3);
+         preFire(fireMode);
     }
     
     if(hit == 1 && lives.countLiving() >= 1)
@@ -345,7 +344,7 @@ function collisionHandler (bullet, enemy) {
     bullet.kill();
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
     chance = game.rnd.integerInRange(1, 100);
-    if(chance < 90){
+    if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
         explosion.lifespan = 30;
@@ -361,8 +360,8 @@ function collisionHandler (bullet, enemy) {
 }
 
 function getPowerUp(player, power){
+    fireMode =game.rnd.integerInRange(2,3);
     power.kill();
-  //fireMode = 2;
 }
 
 /////////////////// Life Handler Functions /////////////////////
