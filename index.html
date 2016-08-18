@@ -47,7 +47,8 @@ function preload () {
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
- // game.load.spritesheet('cheeta', '../images/test.png', 512, 190, 4);
+  game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
+  //game.load.spritesheet('cheeta', '../images/test.png', 512, 190, 4);
 }
 
 var bulletTime = 0;
@@ -150,9 +151,11 @@ function create () {
         b.events.onOutOfBounds.add(resetBullet, this);
     }
    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-   ////////////////////////////////////////////////////////////
-  // left.trackSprite(player, -10, 20, true);
-   //right.trackSprite(player, 10, 20, true);
+   
+   ////////////// We are in The Beam ////////////////////////
+   
+   
+   ////////////////// Powers ////////////////////////////////
    powers = game.add.group();
    powers.enableBody = true;
    powers.physicsBodyType = Phaser.Physics.ARCADE;
@@ -164,6 +167,8 @@ function create () {
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
+ //     game.physics.arcade.overlap(player, beam, beamCollision, null, this);
+
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
@@ -229,7 +234,8 @@ function update () {
     
     if(fireButton.isDown && gameOver != 1)
     {
-         preFire(fireMode);
+        preFire(4);
+         //preFire(fireMode);
     }
     
     if(hit == 1 && lives.countLiving() >= 1)
@@ -267,6 +273,9 @@ function preFire(fireState){
         case 3:
             scatterShot();
             break;
+        case 4:
+            fireBeam();
+            break;
         default:
     }
 }
@@ -275,7 +284,7 @@ function singleShot(){
     if(game.time.now > bulletTime)
     {
         fireBullet(0);
-        bulletTime = game.time.now + 0;
+        bulletTime = game.time.now + 500;
     }
 }
 function scatterShot(){
@@ -309,6 +318,14 @@ function burstFire(){
     }
 }
 
+function fireBeam(){
+    var fireAngle = 0;
+    var beam = game.add.sprite(player.x, player.y, 'theBeam');
+    var animateBeam = beam.animations.add('animateBeam');
+    beam.animations.play('animateBeam', 30, true);
+    beam.rotation = player.rotation;
+    
+}
 
 
 function fireBullet (fireAngle) {
@@ -325,7 +342,7 @@ function fireBullet (fireAngle) {
 
             bullet.reset(player.x , player.y);
  
-            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 1500, bullet.body.velocity);
+            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 750, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
@@ -341,7 +358,16 @@ function resetBullet (bullet) {
 
 }
 
-
+function beamCollision(beam, enemy){
+    var chance = 0;
+    
+    enemy.kill;
+    
+    chance = game.rnd.integerInRange(1, 100);
+    if(chance < 50){
+       power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
+    }
+}
 
 function collisionHandler (bullet, enemy) {
     var chance = 0;
