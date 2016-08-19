@@ -43,7 +43,7 @@ function preload () {
   game.load.image('bullet', '../images/pewpew2.png');
   game.load.image('fire', '../images/emit.png');
   game.load.image('ship2', '../images/shipGreen.png');
-  game.load.image('boom1', '../images/boom1.png');
+  game.load.spritesheet('boom1', '../images/boom2.png', 32, 32, 5);
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
@@ -61,6 +61,7 @@ var shootTimer;
 var gameOver = 0; 
 var fireMode;
 var power;
+var beam;
 
 function create () {
   background = game.add.sprite(0, 0, 'background');
@@ -153,7 +154,9 @@ function create () {
    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
    ////////////// We are in The Beam ////////////////////////
-   
+   beams = game.add.group();
+   beams.enableBody = true;
+   beams.physicsBodyType = Phaser.Physics.ARCADE;
    
    ////////////////// Powers ////////////////////////////////
    powers = game.add.group();
@@ -167,7 +170,7 @@ function create () {
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
- //     game.physics.arcade.overlap(player, beam, beamCollision, null, this);
+   game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
@@ -320,7 +323,8 @@ function burstFire(){
 
 function fireBeam(){
     var fireAngle = 0;
-    var beam = game.add.sprite(player.x, player.y, 'theBeam');
+    beam = beams.create(player.x, player.y, 'theBeam');
+
     var animateBeam = beam.animations.add('animateBeam');
     beam.animations.play('animateBeam', 30, true);
     beam.rotation = player.rotation;
@@ -373,6 +377,8 @@ function collisionHandler (bullet, enemy) {
     var chance = 0;
     bullet.kill();
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
+    var explode = explosion.animations.add('boom');
+    explosion.animations.play('boom', 15, false);
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
@@ -390,7 +396,7 @@ function collisionHandler (bullet, enemy) {
 }
 
 function getPowerUp(player, power){
-    fireMode =game.rnd.integerInRange(2,3);
+    fireMode = game.rnd.integerInRange(2,4);
     power.kill();
 }
 
