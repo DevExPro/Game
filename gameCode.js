@@ -339,7 +339,7 @@ function collisionHandler (bullet, enemy) {
 
     
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
-    explosion.anchor.setTo(0.5, 0.5);
+    explosion.anchor.setTo(1, 0.5);
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
     var explode = explosion.animations.add('boom');
