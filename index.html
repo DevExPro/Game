@@ -20,11 +20,6 @@
 
           <h1 id="project_title">Nonsense</h1>
           <h2 id="project_tagline">Arrow keys to move, spacebar to shoot.</h2>
-
-        <!--    <section id="downloads"> -->
-            <!--  <a class="zip_download_link" href="https://github.com/LilyMiranCox/mygithubpage/zipball/master">Download this project as a .zip file</a> -->
-            <!--  <a class="tar_download_link" href="https://github.com/LilyMiranCox/mygithubpage/tarball/master">Download this project as a tar.gz file</a> -->
-          <!--  </section> -->
         </header>
     </div>
 
@@ -36,7 +31,11 @@
 
 <p> </p>
 <a class="mouse_animation"> </a>-->
-<script> var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+<script> 
+var gameWidth = window.innerWidth - 40;
+var gameHeight = window.innerHeight - 40;
+
+var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 function preload () {
   game.load.image('background', '../images/back.png');
@@ -48,7 +47,6 @@ function preload () {
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
-  //game.load.spritesheet('cheeta', '../images/test.png', 512, 190, 4);
 }
 
 var bulletTime = 0;
@@ -58,57 +56,51 @@ var player;
 var timer;
 var powerUp;
 var shootTimer;
-var gameOver = 0; 
+var gameOver = 0;
 var fireMode;
 var power;
 var beam;
 
 function create () {
-  background = game.add.sprite(0, 0, 'background');
-  player = game.add.sprite(400, 500, 'ship2');
-//  var testing = game.add.sprite(200, 100, 'cheeta');
- // var walk = testing.animations.add('walk');
- // testing.animations.play('walk', 15, true);
+    bakground = game.add.sprite(0, 0, 'background');
+    player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
+
 
   ///////////////// Player Lives Section ///////////
-  lives = game.add.group();
-  life = lives.create(1149, 5, 'heart');
-  life = lives.create(1166, 5, 'heart');
-  life = lives.create(1183, 5, 'heart');
+    lives = game.add.group();
+    life = lives.create(gameWidth - 51, 5, 'heart');
+    life = lives.create(gameWidth - 34, 5, 'heart');
+    life = lives.create(gameWidth - 17, 5, 'heart');
+
 
   ////////////////// Emitter section //////////////////
-  game.physics.arcade.enableBody(player);
-  emitterLeft = game.add.emitter(0, 0, 1000);
-  emitterRight = game.add.emitter(0, 0, 1000);
-  emitterLeft.makeParticles('fire');
-  emitterRight.makeParticles('fire');
-  player.addChild(emitterLeft);
-  player.addChild(emitterRight);
-  emitterLeft.y = 16;
-  emitterLeft.x = -10;
+    game.physics.arcade.enableBody(player);
+    emitterLeft = game.add.emitter(0, 0, 1000);
+    emitterRight = game.add.emitter(0, 0, 1000);
+    emitterLeft.makeParticles('fire');
+    emitterRight.makeParticles('fire');
+    player.addChild(emitterLeft);
+    player.addChild(emitterRight);
+    emitterLeft.y = 16;
+    emitterLeft.x = -10;
+      
+    emitterRight.y = -16;
+    emitterRight.x = -10;
   
-  emitterRight.y = -16;
-  emitterRight.x = -10;
-  
-  emitterLeft.lifespan = 150;
-  emitterRight.lifespan = 150;
-  emitterRight.maxParticleSpeed = new Phaser.Point(-100, 50);
-  emitterRight.minParticleSpeed = new Phaser.Point(-200, -50);
+    emitterLeft.lifespan = 150;
+    emitterRight.lifespan = 150;
+    emitterRight.maxParticleSpeed = new Phaser.Point(-100, 50);
+    emitterRight.minParticleSpeed = new Phaser.Point(-200, -50);
 
-  emitterLeft.maxParticleSpeed = new Phaser.Point(-100, 50);
-  emitterLeft.minParticleSpeed = new Phaser.Point(-200, -50);
-  
-  
-    
+    emitterLeft.maxParticleSpeed = new Phaser.Point(-100, 50);
+    emitterLeft.minParticleSpeed = new Phaser.Point(-200, -50);
+
   
   ///////////////// Spawning Enemies //////////////////////////
-  var totalEnemies = 5;
+    var totalEnemies = 5;
 
-  enemies = game.add.group();
+    enemies = game.add.group();
     enemies.enableBody = true;
-    
-    
-
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
     for(j = 0; j < totalEnemies; j++)
@@ -117,31 +109,28 @@ function create () {
     }
 
     
-    ////////////// Player Attributes Sction /////////////////
-
+  ////////////// Player Attributes Sction /////////////////
     hit = 0;
     flashPlayer = 0;
 
-   //game.camera.follow(player);
-   cursors = game.input.keyboard.createCursorKeys();
-   //game.physics.arcade.enable(player);
-   game.world.setBounds(0, 0, 1200, 600);
-  
+    //game.camera.follow(player);
+    cursors = game.input.keyboard.createCursorKeys();
+    //game.physics.arcade.enable(player);
+    game.world.setBounds(0, 0, gameWidth, gameHeight);
    
-   player.body.collideWorldBounds = true;
-   player.anchor.setTo(0.5, 0.5);
-   player.body.drag.set(55);
-   player.body.maxVelocity.set(300);
+    player.body.collideWorldBounds = true;
+    player.anchor.setTo(0.5, 0.5);
+    player.body.drag.set(55);
+    player.body.maxVelocity.set(300);
    
-
-    /////////////////// Bullets Section ////////////////////// 
+  /////////////////// Bullets Section ////////////////////// 
     bullets = game.add.group();
     fireMode = 1;
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
     
-   for (var i = 0; i < 200; i++)
+    for (var i = 0; i < 200; i++)
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
@@ -151,21 +140,19 @@ function create () {
         b.checkWorldBounds = true;
         b.events.onOutOfBounds.add(resetBullet, this);
     }
-   fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
-   ////////////// We are in The Beam ////////////////////////
-   beams = game.add.group();
-   beams.enableBody = true;
-   beams.physicsBodyType = Phaser.Physics.ARCADE;
+  ////////////// We are in The Beam ////////////////////////
+    beams = game.add.group();
+    beams.enableBody = true;
+    beams.physicsBodyType = Phaser.Physics.ARCADE;
    
-   ////////////////// Powers ////////////////////////////////
-   powers = game.add.group();
-   powers.enableBody = true;
-   powers.physicsBodyType = Phaser.Physics.ARCADE;
+  ////////////////// Powers ////////////////////////////////
+    powers = game.add.group();
+    powers.enableBody = true;
+    powers.physicsBodyType = Phaser.Physics.ARCADE;
    
 }
-
-
 
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
@@ -182,15 +169,15 @@ function update () {
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
     //{
-   if(hit == 0)
+    if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
     {
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
     }
     
-	game.physics.arcade.collide(enemies);
-	game.physics.arcade.collide(player);
-	
-	
+    game.physics.arcade.collide(enemies);
+    game.physics.arcade.collide(player);
+    
+    
     //////////////////  Buttons ////////////////////
     if (cursors.up.isDown)
     {
@@ -203,7 +190,7 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
-     if(cursors.left.isUp || cursors.right.isUp)
+    if(cursors.left.isUp || cursors.right.isUp)
     {
         if (cursors.left.isDown && cursors.right.isUp)
         {
@@ -241,14 +228,14 @@ function update () {
          //preFire(fireMode);
     }
     
-    if(hit == 1 && lives.countLiving() >= 1)
+   if(hit == 1 && lives.countLiving() >= 1)
     {
-        if(flashPlayer > 5)
+       if(flashPlayer > 5)
         {
             player.visible = false;
             flashPlayer = 0;
         }
-        else
+       else
         {
             player.visible = true;
             ++flashPlayer;
@@ -258,7 +245,7 @@ function update () {
     
 }
     
-    function render() {
+function render() {
         //    game.debug.text('Time until event: ' + shootTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
 }
@@ -283,6 +270,7 @@ function preFire(fireState){
     }
 }
 
+
 function singleShot(){
     if(game.time.now > bulletTime)
     {
@@ -290,6 +278,8 @@ function singleShot(){
         bulletTime = game.time.now + 500;
     }
 }
+
+
 function scatterShot(){
     var fireAngle = 0;
     if(game.time.now > bulletTime)
@@ -299,12 +289,10 @@ function scatterShot(){
             fireAngle = -15 + (15 * i);
             fireBullet(fireAngle);
         }
-        
         bulletTime = game.time.now + 500;
     }
     
 }
-
 
 
 function burstFire(){
@@ -316,10 +304,10 @@ function burstFire(){
             shootTimer = game.time.events.add(70 * i, fireBullet, this, fireAngle);
     
         }
-        
         bulletTime = game.time.now + 600;
     }
 }
+
 
 function fireBeam(){
     var fireAngle = 0;
@@ -355,12 +343,15 @@ function fireBullet (fireAngle) {
   //  }
 
 }
+
+
 //  Called if the bullet goes out of the screen
 function resetBullet (bullet) {
 
     bullet.kill();
 
 }
+
 
 function beamCollision(beam, enemy){
     var chance = 0;
@@ -373,44 +364,50 @@ function beamCollision(beam, enemy){
     }
 }
 
+
 function collisionHandler (bullet, enemy) {
     var chance = 0;
     bullet.kill();
+    
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
     var explode = explosion.animations.add('boom');
     explosion.animations.play('boom', 15, false);
+    
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-        explosion.lifespan = 30;
-
+    explosion.lifespan = 30;
 
     enemy.kill();
 
     if(enemies.countDead() == 5)
-     {
-      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-      text = game.add.text(0,0, "Wiiiiinnnner", style);
-     }
+    {
+        style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+        text = game.add.text(0,0, "Wiiiiinnnner", style);
+    }
 }
+
 
 function getPowerUp(player, power){
     fireMode = game.rnd.integerInRange(2,4);
     power.kill();
 }
 
+
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
-    hit = 1;
-   // player.tint = 0xffffff;
-    lifeHeart = lives.getFirstAlive();
-    if(lifeHeart)
+    hit = 1; // Indicates that the player has been hit
+    var lifeHeart = lives.getFirstAlive();
+    
+    if(lifeHeart) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
      }
-    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this);
- /*     if(lives.countLiving() < 1)
+    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
+                                                                                // player from flashing
+                                                                                
+ /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
       player.kill();
       gameOver = 1;
@@ -418,6 +415,7 @@ function playerHit (player, enemy) {
       text = game.add.text(0,0, "GAME OVER", style);
      }*/
 }
+
 
 function resetHit () {
     game.time.events.remove(hitTimer);
@@ -430,12 +428,8 @@ function spawnEnemy (){
         var enemy = enemies.create(1000, 0, 'enemy');
 
 }
-  /*  else if (cursors.down.isDown)
-    {
-        player.body.velocity.y = 400;
-    }*/
-    
-   // game.world.wrap(player, 0, true, true, true);
+
+
 </script> <!--
       </section>
     </div>-->
