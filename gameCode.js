@@ -119,9 +119,9 @@ function create () {
     
     for (var k = 0; k < 50; k++)
     {
-        var e = explosions.create(0, 0, 'boom1');
+        var e = explosions.create(0, 0, 'theBeam');
         e.name = 'explosion' + k;
-        e.anchor.setTo(0.5, 0.5);
+        e.anchor.setTo(1, 1.5);
         e.exists = false;
         e.visible = false;
         e.checkWorldBounds = true;
@@ -363,7 +363,7 @@ function collisionHandler (bullet, enemy) {
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-    explosion.lifespan = 100;
+    explosion.lifespan = 300;
 
     enemy.kill();
 
