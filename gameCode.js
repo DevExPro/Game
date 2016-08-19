@@ -96,7 +96,7 @@ function create () {
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
     
-    for (var i = 0; i < 200; i++)
+    for (var i = 0; i < 50; i++)
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
@@ -113,6 +113,20 @@ function create () {
  /*   beams = game.add.group();
     beams.enableBody = true;
     beams.physicsBodyType = Phaser.Physics.ARCADE;*/
+    explosions = game.add.group();
+    explosions.enableBody = true;
+    explosions.physicsBodyType = Phaser.Physics.ARCADE;
+    
+    for (var k = 0; k < 50; k++)
+    {
+        var e = explosions.create(0, 0, 'boom1');
+        e.name = 'explosion' + k;
+        e.anchor.setTo(0.5, 0.5);
+        e.exists = false;
+        e.visible = false;
+        e.checkWorldBounds = true;
+        
+    }
 
   ////////////////// Powers ////////////////////////////////
     powers = game.add.group();
@@ -337,19 +351,19 @@ function collisionHandler (bullet, enemy) {
     var chance = 0;
     bullet.kill();
 
+    explosion = explosions.getFirstExists(false);
+    explosion.reset(bullet.body.x, bullet.body.y);
     
-    explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
-    explosion.anchor.setTo(1, 1);
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
-    var explode = explosion.animations.add('boom');
-    explosion.animations.play('boom', 3, true);
+    var explode = explosion.animations.add('boomExplode');
+    explosion.animations.play('boomExplode', 7, true);
     
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-    explosion.lifespan = 30;
+    explosion.lifespan = 100;
 
     enemy.kill();
 
