@@ -121,7 +121,7 @@ function create () {
     {
         var e = explosions.create(0, 0, 'boom1');
         e.name = 'explosion' + k;
-        e.anchor.setTo(1, 1.5);
+        e.anchor.setTo(1, 1);
         e.exists = false;
         e.visible = false;
         e.checkWorldBounds = true;
