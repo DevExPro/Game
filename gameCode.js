@@ -1,5 +1,5 @@
-var gameWidth = window.innerWidth - 40;
-var gameHeight = window.innerHeight - 40;
+var gameWidth = window.innerWidth - 100;
+var gameHeight = window.innerHeight - 100;
 
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
@@ -100,6 +100,7 @@ function create () {
     {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
+       // b.anchor.setTo(-.9, 0.5);
         b.anchor.setTo(-.9, 0.5);
         b.exists = false;
         b.visible = false;
@@ -109,10 +110,10 @@ function create () {
     fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
   ////////////// We are in The Beam ////////////////////////
-    beams = game.add.group();
+ /*   beams = game.add.group();
     beams.enableBody = true;
-    beams.physicsBodyType = Phaser.Physics.ARCADE;
-   
+    beams.physicsBodyType = Phaser.Physics.ARCADE;*/
+
   ////////////////// Powers ////////////////////////////////
     powers = game.add.group();
     powers.enableBody = true;
@@ -123,7 +124,7 @@ function create () {
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
-   game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
+   //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
@@ -213,6 +214,8 @@ function update () {
 function render() {
         //    game.debug.text('Time until event: ' + shootTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
+       //game.debug.spriteInfo(explosion, 32, 32);
+
 }
 
 /////////////////// Bullet Functions ///////////////////////
@@ -274,7 +277,7 @@ function burstFire(){
 }
 
 
-function fireBeam(){
+/*function fireBeam(){
     var fireAngle = 0;
     beam = beams.create(player.x, player.y, 'theBeam');
 
@@ -282,7 +285,7 @@ function fireBeam(){
     beam.animations.play('animateBeam', 30, true);
     beam.rotation = player.rotation;
     
-}
+}*/
 
 
 function fireBullet (fireAngle) {
@@ -318,7 +321,7 @@ function resetBullet (bullet) {
 }
 
 
-function beamCollision(beam, enemy){
+/*function beamCollision(beam, enemy){
     var chance = 0;
     
     enemy.kill;
@@ -327,16 +330,20 @@ function beamCollision(beam, enemy){
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-}
+}*/
 
 
 function collisionHandler (bullet, enemy) {
     var chance = 0;
     bullet.kill();
+
     
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
+    explosion.anchor.setTo(0.5, 0.5);
+    //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
+
     var explode = explosion.animations.add('boom');
-    explosion.animations.play('boom', 15, false);
+    explosion.animations.play('boom', 20, true);
     
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
@@ -367,10 +374,14 @@ function playerHit (player, enemy) {
     
     if(lifeHeart) // If the player has a life, it will be removed
      {
+         console.log("Removing a life");
          lifeHeart.kill();
-     }
-    hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
-                                                                                // player from flashing
+     
+         hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
+      }                                                                                                                  // player from flashing
+      else {
+          console.log("No more lives!");
+      }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
@@ -383,8 +394,9 @@ function playerHit (player, enemy) {
 
 
 function resetHit () {
-    game.time.events.remove(hitTimer);
     hit = 0;
+    console.log("2.5 Seconds up");
+    game.time.events.remove(hitTimer);
 }
 
 //////////////////////// Spawn Enemies Function ///////////////////////
