@@ -119,7 +119,7 @@ function create () {
     
     for (var k = 0; k < 50; k++)
     {
-        var e = explosions.create(0, 0, 'theBeam');
+        var e = explosions.create(0, 0, 'boom1');
         e.name = 'explosion' + k;
         e.anchor.setTo(1, 1.5);
         e.exists = false;
