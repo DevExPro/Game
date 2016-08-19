@@ -339,11 +339,11 @@ function collisionHandler (bullet, enemy) {
 
     
     explosion = game.add.sprite(bullet.body.x, bullet.body.y, 'boom1');
-    explosion.anchor.setTo(1, 0.5);
+    explosion.anchor.setTo(1, 1);
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
     var explode = explosion.animations.add('boom');
-    explosion.animations.play('boom', 20, true);
+    explosion.animations.play('boom', 3, true);
     
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
