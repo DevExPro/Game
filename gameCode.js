@@ -13,10 +13,12 @@ function preload () {
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
+  game.load.image('pauseButton', '../images/pause.png');
 }
 
 var bulletTime = 0;
 var bullet;
+var button;
 var explosion;
 var player;
 var timer;
@@ -30,6 +32,14 @@ var beam;
 function create () {
     bakground = game.add.sprite(0, 0, 'background');
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
+    
+    /////////////// Pause Button ////////////////////
+    button = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+
+    button.onInputOver.add(over, this);
+    button.onInputOut.add(out, this);
+    button.onInputUp.add(up, this);
+
 
 
   ///////////////// Player Lives Section ///////////
@@ -121,7 +131,7 @@ function create () {
     {
         var e = explosions.create(0, 0, 'boom1');
         e.name = 'explosion' + k;
-        e.anchor.setTo(1, 1);
+        e.anchor.setTo(.5, 1);
         e.exists = false;
         e.visible = false;
         e.checkWorldBounds = true;
@@ -150,10 +160,10 @@ function update () {
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
     //{
-    if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
-    {
+    //if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
+   //{
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
-    }
+    //}
     
     game.physics.arcade.collide(enemies);
     game.physics.arcade.collide(player);
@@ -231,6 +241,23 @@ function render() {
        //game.debug.spriteInfo(explosion, 32, 32);
 
 }
+
+    /////////////////// Buttons /////////////////////
+    function actionOnClick (){
+        game.add.sprite(500, 500, 'theBeam');
+    }
+    
+    function up() {
+        console.log('button up', arguments);
+    }
+    
+    function over() {
+        console.log('button over');
+    }
+    
+    function out() {
+        console.log('button out');
+    }
 
 /////////////////// Bullet Functions ///////////////////////
 function preFire(fireState){
@@ -316,7 +343,7 @@ function fireBullet (fireAngle) {
 
             bullet.reset(player.x , player.y);
  
-            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 750, bullet.body.velocity);
+            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 900, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
@@ -357,13 +384,13 @@ function collisionHandler (bullet, enemy) {
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
     var explode = explosion.animations.add('boomExplode');
-    explosion.animations.play('boomExplode', 7, true);
+    explosion.animations.play('boomExplode', 10, true);
     
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-    explosion.lifespan = 300;
+    explosion.lifespan = 250;
 
     enemy.kill();
 
@@ -388,13 +415,12 @@ function playerHit (player, enemy) {
     
     if(lifeHeart) // If the player has a life, it will be removed
      {
-         console.log("Removing a life");
          lifeHeart.kill();
      
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }                                                                                                                  // player from flashing
       else {
-          console.log("No more lives!");
+          player.tint = '#0f0';
       }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
