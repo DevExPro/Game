@@ -39,6 +39,14 @@ function create () {
     button.onInputOver.add(over, this);
     button.onInputOut.add(out, this);
     button.onInputUp.add(up, this);
+    
+    game.input.onDown.add(unpause, self);
+
+    function unpause(event){
+        if(game.paused){
+            game.paused = false;
+        }
+    }
 
 
 
@@ -142,6 +150,10 @@ function create () {
     powers = game.add.group();
     powers.enableBody = true;
     powers.physicsBodyType = Phaser.Physics.ARCADE;
+    
+    
+    
+    
    
 }
 
@@ -242,9 +254,11 @@ function render() {
 
 }
 
+
     /////////////////// Buttons /////////////////////
     function actionOnClick (){
         game.add.sprite(500, 500, 'theBeam');
+        game.paused = true;
     }
     
     function up() {
@@ -258,6 +272,8 @@ function render() {
     function out() {
         console.log('button out');
     }
+    
+    
 
 /////////////////// Bullet Functions ///////////////////////
 function preFire(fireState){
