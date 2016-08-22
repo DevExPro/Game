@@ -28,6 +28,7 @@ var gameOver = 0;
 var fireMode;
 var power;
 var beam;
+var gameStartTimer;
 var totalEnemies;
 function create () {
     bakground = game.add.sprite(0, 0, 'background');
@@ -87,7 +88,30 @@ function create () {
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
-    levelOne();
+    
+    gameStartTimer = game.time.create();
+    var levelOneTimer = game.time.create();
+    gameStartTimer.start();
+    gameStartTimer.add(0, countDown, this, 3);
+    
+    gameStartTimer.add(1000/*1175*/, countDown, this, 2);
+   // gameStartTimer.start();
+    gameStartTimer.add(1965/*2175*/, countDown, this, 1);
+    levelOneTimer.add(3000, levelOne, this);
+  //  gameStartTimer.start();
+   // gameStartTimer.onComplete.add(levelOneTimer.start, this);
+
+    levelOneTimer.start();
+    
+    /*for(var k = 0; k < 3; k++){
+        gameStart = game.time.events.add( 1000 * k, countDown, this, 3 - k);
+
+        if(k == 2){
+            gameStart.onComplete.add(levelOne, this);
+        }
+        
+    }*/
+   // levelOne();
     /*for(j = 0; j < totalEnemies; j++)
     {
         spawnTimer = game.time.events.add(500 * j, spawnEnemy, this);
@@ -155,9 +179,28 @@ function create () {
     ///////////////// The Bar /////////////////////////////
     barLength = gameWidth/3;
     barProgress = barLength;
+    
+   /* backRect = new Phaser.Rectangle((gameWidth / 2) - (barLength /2) - 8, gameHeight - 58, (gameWidth/3) + 16, 24);
+    topRect = new Phaser.Rectangle((gameWidth / 2) - (barLength /2) - 7, gameHeight - 57, (gameWidth/3) + 14, 22);
+    game.debug.geom(backRect, '#0f0');
+       game.debug.geom(topRect, '#000');*/
+       
+    backRect = this.add.bitmapData((gameWidth/3) + 8, 16);
+    topRect = this.add.bitmapData((gameWidth/3) + 6, 14);
+    game.add.sprite((gameWidth / 2) - (barLength /2) - 4, gameHeight - 54, backRect);
+    game.add.sprite((gameWidth / 2) - (barLength /2) - 3, gameHeight - 53, topRect);
+    
+    backRect.context.fillStyle = '#0f0';
+       topRect.context.fillStyle = '#000';
+       backRect.context.fillRect(0, 0, (gameWidth/3) + 8, 16);
+       topRect.context.fillRect(0, 0, (gameWidth/3) + 6, 14);
+       
+       
+    
     bar = this.add.bitmapData(barLength, 8);
     game.add.sprite((gameWidth/2) - (barLength /2), gameHeight - 50, bar);
     game.add.tween(this).to({barProgress: 0}, 2000, null, true, 0, Infinity);
+    
     
    
 }
@@ -173,12 +216,23 @@ function update () {
    
   //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
   
- // barProgress = ((totalEnemies - enemies.countDead()) * 128) / totalEnemies;
+  if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
+   {
+       var singleCollision = 0;
+       if(singleCollision == 0)
+       {
+        game.physics.arcade.overlap(enemies, player, playerHit, null, this);
+        ++singleCollision;
+       }
+    }
+  
+
+
    bar.context.clearRect(0,0, bar.width, bar.height);
-   if(barProgress < 32) {
+   if(barProgress < barLength/4) {
        bar.context.fillStyle = '#f00';
    }
-   else if(barProgress <64) {
+   else if(barProgress <barLength/2) {
        bar.context.fillStyle = '#ff0';
    }
    else {
@@ -187,13 +241,10 @@ function update () {
     bar.context.fillRect(0,0, barProgress, 8);
     bar.dirty = true;
     
+    
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
     //{
-    //if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
-   //{
-        game.physics.arcade.overlap(enemies, player, playerHit, null, this);
-    //}
     
     game.physics.arcade.collide(enemies);
  //   game.physics.arcade.collide(player);
@@ -266,7 +317,7 @@ function update () {
 }
     
 function render() {
-        //    game.debug.text('Time until event: ' + shootTimer.duration.toFixed(0), 32, 32);
+        game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
 
@@ -428,12 +479,12 @@ function collisionHandler (bullet, enemy) {
 
     enemy.kill();
     
-    barProgress = ((totalEnemies - enemies.countDead()) * 128) / totalEnemies;
+    barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
 
     if(enemies.countDead() == totalEnemies)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        text = game.add.text(0,0, "Wiiiiinnnner", style);
+        text = game.add.text(0, 0, "Wiiiiinnnner", style);
     }
 }
 
@@ -452,11 +503,12 @@ function playerHit (player, enemy) {
     if(lifeHeart) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
-     
+            console.log("Player still has a life");
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }                                                                                                                  // player from flashing
       else {
          // player.tint = '#ff0';
+         console.log("OH Nooooooo, player has no more lives");
       }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
@@ -471,7 +523,7 @@ function playerHit (player, enemy) {
 
 function resetHit () {
     hit = 0;
-    console.log("2.5 Seconds up");
+    console.log("Reseting playerHit timer");
     game.time.events.remove(hitTimer);
 }
 
@@ -480,20 +532,28 @@ function resetHit () {
 function spawnEnemy (itteration){
 
    
-    var enemy = enemies.create(gameWidth/3 * itteration, 0, 'enemy');
+    var enemy = enemies.create(gameWidth/4 * itteration, 0, 'enemy');
 
 }
 
 function levelOne(){
     totalEnemies = 15;
     for(var i = 0; i < 3; i++){
-        var waveTimer = game.time.events.add(5000 * i, spawnFive, this);
+        game.time.events.add(5000 * i, spawnFive, this, i + 1);
     }
 }
 
-function spawnFive(){
+function spawnFive(itteration){
     for(var j = 0; j < 5; j++)
     {
-        var spawnTimer = game.time.events.add(500 * j, spawnEnemy, this, j + 1);
+        game.time.events.add(500 * j, spawnEnemy, this, itteration);
     }
+}
+
+function countDown(time){
+    var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+  //alert("countDown is being called");
+    var text = game.add.text(gameWidth/2, gameHeight/2, time, style);
+    text.lifespan = 965;
+
 }
