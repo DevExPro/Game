@@ -103,21 +103,6 @@ function create () {
 
     levelOneTimer.start();
     
-    /*for(var k = 0; k < 3; k++){
-        gameStart = game.time.events.add( 1000 * k, countDown, this, 3 - k);
-
-        if(k == 2){
-            gameStart.onComplete.add(levelOne, this);
-        }
-        
-    }*/
-   // levelOne();
-    /*for(j = 0; j < totalEnemies; j++)
-    {
-        spawnTimer = game.time.events.add(500 * j, spawnEnemy, this);
-    }*/
-
-    
   ////////////// Player Attributes Sction /////////////////
     hit = 0;
     flashPlayer = 0;
@@ -144,7 +129,7 @@ function create () {
         var b = bullets.create(0, 0, 'bullet');
         b.name = 'bullet' + i;
        // b.anchor.setTo(-.9, 0.5);
-        b.anchor.setTo(-.9, 0.5);
+        b.anchor.setTo(-.6, 0.5);
         b.exists = false;
         b.visible = false;
         b.checkWorldBounds = true;
