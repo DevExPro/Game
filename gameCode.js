@@ -8,7 +8,7 @@ function preload () {
   game.load.image('bullet', '../images/pewpew2.png');
   game.load.image('fire', '../images/emit.png');
   game.load.image('ship2', '../images/shipGreen.png');
-  game.load.spritesheet('boom1', '../images/boom2.png', 32, 32, 5);
+  game.load.spritesheet('boom1', '../images/explode2.png', 39, 38, 7);
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
@@ -454,13 +454,13 @@ function collisionHandler (bullet, enemy) {
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
     var explode = explosion.animations.add('boomExplode');
-    explosion.animations.play('boomExplode', 10, true);
+    explosion.animations.play('boomExplode', 15, true);
     
     chance = game.rnd.integerInRange(1, 100);
     if(chance < 50){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
-    explosion.lifespan = 250;
+    explosion.lifespan = 275;
 
     enemy.kill();
     
