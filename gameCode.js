@@ -28,7 +28,7 @@ var gameOver = 0;
 var fireMode;
 var power;
 var beam;
-
+var totalEnemies;
 function create () {
     bakground = game.add.sprite(0, 0, 'background');
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
@@ -81,16 +81,17 @@ function create () {
 
   
   ///////////////// Spawning Enemies //////////////////////////
-    var totalEnemies = 5;
+    //var totalEnemies = 5;
 
     enemies = game.add.group();
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
-    for(j = 0; j < totalEnemies; j++)
+    levelOne();
+    /*for(j = 0; j < totalEnemies; j++)
     {
         spawnTimer = game.time.events.add(500 * j, spawnEnemy, this);
-    }
+    }*/
 
     
   ////////////// Player Attributes Sction /////////////////
@@ -151,10 +152,11 @@ function create () {
     powers.enableBody = true;
     powers.physicsBodyType = Phaser.Physics.ARCADE;
     
-    
-    barProgress = 128;
-    bar = this.add.bitmapData(128, 8);
-    game.add.sprite(gameWidth - 50, gameHeight - 50, bar);
+    ///////////////// The Bar /////////////////////////////
+    barLength = gameWidth/3;
+    barProgress = barLength;
+    bar = this.add.bitmapData(barLength, 8);
+    game.add.sprite((gameWidth/2) - (barLength /2), gameHeight - 50, bar);
     game.add.tween(this).to({barProgress: 0}, 2000, null, true, 0, Infinity);
     
    
@@ -170,7 +172,20 @@ function update () {
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
    
   //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
-
+  
+ // barProgress = ((totalEnemies - enemies.countDead()) * 128) / totalEnemies;
+   bar.context.clearRect(0,0, bar.width, bar.height);
+   if(barProgress < 32) {
+       bar.context.fillStyle = '#f00';
+   }
+   else if(barProgress <64) {
+       bar.context.fillStyle = '#ff0';
+   }
+   else {
+        bar.context.fillStyle = '#0f0';
+   }
+    bar.context.fillRect(0,0, barProgress, 8);
+    bar.dirty = true;
     
    // timeBetweenCollision = game.timer(game);
     //if(timeBetweenCollision > 10)
@@ -181,7 +196,7 @@ function update () {
     //}
     
     game.physics.arcade.collide(enemies);
-    game.physics.arcade.collide(player);
+ //   game.physics.arcade.collide(player);
     
     
     //////////////////  Buttons ////////////////////
@@ -291,9 +306,10 @@ function preFire(fireState){
             scatterShot();
             break;
         case 4:
-            fireBeam();
             break;
         default:
+            singleShot();
+        
     }
 }
 
@@ -411,8 +427,10 @@ function collisionHandler (bullet, enemy) {
     explosion.lifespan = 250;
 
     enemy.kill();
+    
+    barProgress = ((totalEnemies - enemies.countDead()) * 128) / totalEnemies;
 
-    if(enemies.countDead() == 5)
+    if(enemies.countDead() == totalEnemies)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
         text = game.add.text(0,0, "Wiiiiinnnner", style);
@@ -459,7 +477,23 @@ function resetHit () {
 
 //////////////////////// Spawn Enemies Function ///////////////////////
 
-function spawnEnemy (){
-        var enemy = enemies.create(1000, 0, 'enemy');
+function spawnEnemy (itteration){
 
+   
+    var enemy = enemies.create(gameWidth/3 * itteration, 0, 'enemy');
+
+}
+
+function levelOne(){
+    totalEnemies = 15;
+    for(var i = 0; i < 3; i++){
+        var waveTimer = game.time.events.add(5000 * i, spawnFive, this);
+    }
+}
+
+function spawnFive(){
+    for(var j = 0; j < 5; j++)
+    {
+        var spawnTimer = game.time.events.add(500 * j, spawnEnemy, this, j + 1);
+    }
 }
