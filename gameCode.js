@@ -149,7 +149,7 @@ function create () {
     {
         var e = explosions.create(0, 0, 'boom1');
         e.name = 'explosion' + k;
-        e.anchor.setTo(.5, 1);
+     //   e.anchor.setTo(.5, .5);
         e.exists = false;
         e.visible = false;
         e.checkWorldBounds = true;
@@ -203,12 +203,7 @@ function update () {
   
   if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
    {
-       var singleCollision = 0;
-       if(singleCollision == 0)
-       {
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
-        ++singleCollision;
-       }
     }
   
 
@@ -232,7 +227,7 @@ function update () {
     //{
     
     game.physics.arcade.collide(enemies);
- //   game.physics.arcade.collide(player);
+    game.physics.arcade.collide(enemies, player);
     
     
     //////////////////  Buttons ////////////////////
@@ -449,7 +444,7 @@ function collisionHandler (bullet, enemy) {
     bullet.kill();
 
     explosion = explosions.getFirstExists(false);
-    explosion.reset(bullet.body.x, bullet.body.y);
+    explosion.reset(enemy.body.x, enemy.body.y);
     
     //explosion = explosions.create(bullet.body.x, bullet.body.y, 'boom1');
 
