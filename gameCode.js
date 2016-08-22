@@ -438,7 +438,7 @@ function playerHit (player, enemy) {
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }                                                                                                                  // player from flashing
       else {
-          player.tint = '#ff0';
+         // player.tint = '#ff0';
       }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
