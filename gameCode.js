@@ -13,7 +13,7 @@ function preload () {
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
-  game.load.image('pauseButton', '../images/pause.png');
+  game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
 }
 
 var bulletTime = 0;
@@ -438,7 +438,7 @@ function playerHit (player, enemy) {
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }                                                                                                                  // player from flashing
       else {
-        //  player.tint = '#ff0';
+          player.tint = '#ff0';
       }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
