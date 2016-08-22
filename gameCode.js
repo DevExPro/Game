@@ -35,7 +35,7 @@ function create () {
     
     /////////////// Pause Button ////////////////////
     button = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
-
+    button.anchor.setTo(0.5, 0.5);
     button.onInputOver.add(over, this);
     button.onInputOut.add(out, this);
     button.onInputUp.add(up, this);
@@ -152,7 +152,10 @@ function create () {
     powers.physicsBodyType = Phaser.Physics.ARCADE;
     
     
-    
+    barProgress = 128;
+    bar = this.add.bitmapData(128, 8);
+    game.add.sprite(gameWidth - 50, gameHeight - 50, bar);
+    game.add.tween(this).to({barProgress: 0}, 2000, null, true, 0, Infinity);
     
    
 }
@@ -257,7 +260,6 @@ function render() {
 
     /////////////////// Buttons /////////////////////
     function actionOnClick (){
-        game.add.sprite(500, 500, 'theBeam');
         game.paused = true;
     }
     
@@ -436,7 +438,7 @@ function playerHit (player, enemy) {
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }                                                                                                                  // player from flashing
       else {
-          player.tint = '#0f0';
+        //  player.tint = '#ff0';
       }
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
