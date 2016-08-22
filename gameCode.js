@@ -8,7 +8,7 @@ function preload () {
   game.load.image('bullet', '../images/pewpew2.png');
   game.load.image('fire', '../images/emit.png');
   game.load.image('ship2', '../images/shipGreen.png');
-  game.load.spritesheet('boom1', '../images/explode2.png', 39, 38, 7);
+  game.load.spritesheet('boom1', '../images/expolode2.png', 39, 38, 7);
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/heart.png');
   game.load.image('powerUp', '../images/lightning2.png');
