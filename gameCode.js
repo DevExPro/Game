@@ -10,7 +10,7 @@ function preload () {
   game.load.image('ship2', '../images/shipGreen.png');
   game.load.spritesheet('boom1', '../images/expolode2.png', 39, 38, 7);
   game.load.image('enemy', '../images/enemyShip2.png');
-  game.load.image('heart', '../images/lifeShip');
+  game.load.image('heart', '../images/lifeShip.png');
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
