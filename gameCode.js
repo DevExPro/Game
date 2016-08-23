@@ -195,7 +195,7 @@ function update () {
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
-   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 125);
+   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
    enemies.forEach(rotateEnemies, this);
        player.rotation = game.physics.arcade.angleToPointer(player);
 
@@ -547,7 +547,7 @@ function levelOne(){
     
 
 
-    totalEnemies = 29;
+    totalEnemies = 53;
    /* for(var i = 0; i < 3; i++){
         game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
     }*/
@@ -566,9 +566,15 @@ function levelOne(){
     game.time.events.add(6000, spawnBR, this, 3);
     game.time.events.add(12000, spawnTL, this, 4);
     game.time.events.add(12000, spawnTR, this, 4);
+    game.time.events.add(12000, spawnBM, this, 4);
     game.time.events.add(18000, spawnML, this, 3);
     game.time.events.add(18000, spawnMR, this, 3);
     game.time.events.add(18000, spawnBM, this, 3);
+    game.time.events.add(18000, spawnTM, this, 4);
+    game.time.events.add(18000, spawnTL, this, 4);
+    game.time.events.add(18000, spawnTR, this, 4);
+    game.time.events.add(18000, spawnBL, this, 4);
+    game.time.events.add(18000, spawnBR, this, 4);
 
 
 }
