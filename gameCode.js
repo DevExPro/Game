@@ -285,6 +285,10 @@ function update () {
         }
         
     }
+    if(hit == 0 && player.visible == false)
+    {
+        player.visible = true;
+    }
     
 }
 
@@ -456,8 +460,12 @@ function collisionHandler (bullet, enemy) {
     enemy.kill();
     
     barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
-
-    if(enemies.countDead() == totalEnemies)
+    if(enemies.countDead( == totalEnemies && lives.countLiving() < 1))
+    {
+        style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+        text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
+    }
+    else if(enemies.countDead() == totalEnemies)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
         text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
@@ -491,7 +499,7 @@ function playerHit (player, enemy) {
         explode.onComplete.add(function() {
             playerDeath.kill();
         });
-        playerDeath.animations.play('playerBoom', 15);
+      playerDeath.animations.play('playerBoom', 15);
       player.kill();
       gameOver = 1;
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
