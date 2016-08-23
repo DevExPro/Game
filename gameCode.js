@@ -10,7 +10,7 @@ function preload () {
   game.load.image('ship2', '../images/shipGreen.png');
   game.load.spritesheet('boom1', '../images/expolode2.png', 39, 38, 7);
   game.load.image('enemy', '../images/enemyShip2.png');
-  game.load.image('heart', '../images/heart.png');
+  game.load.image('heart', '../images/lifeShip');
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
@@ -32,6 +32,27 @@ var gameStartTimer;
 var totalEnemies;
 function create () {
     bakground = game.add.sprite(0, 0, 'background');
+    
+    
+    ///////////////// The Bar /////////////////////////////
+    barLength = gameWidth/3;
+    barProgress = barLength;
+    backRect = this.add.bitmapData((gameWidth/3) + 8, 16);
+    topRect = this.add.bitmapData((gameWidth/3) + 6, 14);
+    game.add.sprite((gameWidth / 2) - (barLength /2) - 4, gameHeight - 54, backRect);
+    game.add.sprite((gameWidth / 2) - (barLength /2) - 3, gameHeight - 53, topRect);
+    
+    backRect.context.fillStyle = '#0f0';
+    topRect.context.fillStyle = '#000';
+    backRect.context.fillRect(0, 0, (gameWidth/3) + 8, 16);
+    topRect.context.fillRect(0, 0, (gameWidth/3) + 6, 14);
+    
+    bar = this.add.bitmapData(barLength, 8);
+    game.add.sprite((gameWidth/2) - (barLength /2), gameHeight - 50, bar);
+    game.add.tween(this).to({barProgress: 0}, 2000, null, true, 0, Infinity);
+    
+    
+    ////////////// Player Sprite ////////////////////
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
@@ -53,13 +74,14 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(gameWidth - 51, 5, 'heart');
-    life = lives.create(gameWidth - 34, 5, 'heart');
-    life = lives.create(gameWidth - 17, 5, 'heart');
+    life = lives.create(67, gameHeight - 28, 'heart');
+    life = lives.create(35, gameHeight - 28, 'heart');
+    life = lives.create(3, gameHeight - 28, 'heart');
 
 
   ////////////////// Emitter section //////////////////
     game.physics.arcade.enableBody(player);
+    player.body.immovable = true;
     emitterLeft = game.add.emitter(0, 0, 1000);
     emitterRight = game.add.emitter(0, 0, 1000);
     emitterLeft.makeParticles('fire');
@@ -161,33 +183,8 @@ function create () {
     powers.enableBody = true;
     powers.physicsBodyType = Phaser.Physics.ARCADE;
     
-    ///////////////// The Bar /////////////////////////////
-    barLength = gameWidth/3;
-    barProgress = barLength;
     
-   /* backRect = new Phaser.Rectangle((gameWidth / 2) - (barLength /2) - 8, gameHeight - 58, (gameWidth/3) + 16, 24);
-    topRect = new Phaser.Rectangle((gameWidth / 2) - (barLength /2) - 7, gameHeight - 57, (gameWidth/3) + 14, 22);
-    game.debug.geom(backRect, '#0f0');
-       game.debug.geom(topRect, '#000');*/
-       
-    backRect = this.add.bitmapData((gameWidth/3) + 8, 16);
-    topRect = this.add.bitmapData((gameWidth/3) + 6, 14);
-    game.add.sprite((gameWidth / 2) - (barLength /2) - 4, gameHeight - 54, backRect);
-    game.add.sprite((gameWidth / 2) - (barLength /2) - 3, gameHeight - 53, topRect);
-    
-    backRect.context.fillStyle = '#0f0';
-       topRect.context.fillStyle = '#000';
-       backRect.context.fillRect(0, 0, (gameWidth/3) + 8, 16);
-       topRect.context.fillRect(0, 0, (gameWidth/3) + 6, 14);
-       
-       
-    
-    bar = this.add.bitmapData(barLength, 8);
-    game.add.sprite((gameWidth/2) - (barLength /2), gameHeight - 50, bar);
-    game.add.tween(this).to({barProgress: 0}, 2000, null, true, 0, Infinity);
-    
-    
-   
+    checkPlayerCollision = 0;
 }
 
 function update () {
@@ -197,19 +194,21 @@ function update () {
 
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
-   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
+   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 125);
    enemies.forEach(rotateEnemies, this);
    
   //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
   
-  if(hit == 0) // If it has been more than 2.5 seconds since the player was last hit 
+  if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
    {
+       console.log("HERE");
+       ++checkPlayerCollision;
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
+        checkPlayerCollision = 0;
     }
     
     bar.context.clearRect(0,0, bar.width, bar.height);
     bar.context.fillStyle = '#0f0';
-        
     bar.context.fillRect(0,0, barProgress, 8);
     bar.dirty = true;
     
@@ -289,9 +288,7 @@ function update () {
 }
 
 function rotateEnemies(enemy) {
-    enemy.update = function () {
         enemy.angle = 180 - game.math.radToDeg(Math.atan2(enemy.body.velocity.x, enemy.body.velocity.y));
-    }
 }
     
 function render() {
@@ -488,6 +485,7 @@ function playerHit (player, enemy) {
          // player.tint = '#ff0';
          console.log("OH Nooooooo, player has no more lives");
       }
+      checkPlayerCollision = 0;
                                                                                 
  /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
@@ -507,26 +505,39 @@ function resetHit () {
 
 //////////////////////// Spawn Enemies Function ///////////////////////
 
-function spawnEnemy (itteration){
-
-   
-    var enemy = enemies.create(gameWidth/4 * itteration, 0, 'enemy');
+function spawnEnemy (itteration, topOrBot){
+    
+     
+    var enemy = enemies.create(gameWidth/4 * itteration, topOrBot, 'enemy');
 
 }
 
 function levelOne(){
     totalEnemies = 15;
     for(var i = 0; i < 3; i++){
-        game.time.events.add(5000 * i, spawnFive, this, i + 1);
+        game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
     }
 }
 
-function spawnFive(itteration){
-    for(var j = 0; j < 5; j++)
+function levelTwo(){
+    
+}
+
+function spawnTop(itteration, enemyCount){
+    var chance = 0;
+    var topOrBot = 0;
+    
+    chance = game.rnd.integerInRange(0, 1);
+    if(chance == 1){
+       topOrBot = gameHeight; 
+    }
+    
+    for(var j = 0; j < enemyCount; j++)
     {
-        game.time.events.add(500 * j, spawnEnemy, this, itteration);
+        game.time.events.add(500 * j, spawnEnemy, this, itteration, topOrBot);
     }
 }
+
 
 function countDown(time){
     var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
