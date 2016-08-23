@@ -491,9 +491,9 @@ function playerHit (player, enemy) {
         playerDeath.killonComplete = true;
         playerDeath.animations.play('playerBoom', 15);
       player.kill();
-    //  gameOver = 1;
-    //  style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-    //  text = game.add.text(0,0, "GAME OVER", style);
+      gameOver = 1;
+      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+      text = game.add.text(0,0, "GAME OVER", style);
      }
 }
 
@@ -523,8 +523,8 @@ function levelOne(){
    /* for(var i = 0; i < 3; i++){
         game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
     }*/
-    spawnTL(5);
-    spawnBL(5);
+    spawnTL(3);
+    spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
     game.time.events.add(12000, spawnTL, this, 4);
