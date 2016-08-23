@@ -286,7 +286,7 @@ function update () {
         }
         
     }
-    if(hit == 0 && player.visible == false)
+    if(hit == 0 && player.visible == false && gameOver == 0)
     {
         player.visible = true;
     }
