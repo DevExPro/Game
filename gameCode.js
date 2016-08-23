@@ -460,7 +460,7 @@ function collisionHandler (bullet, enemy) {
     enemy.kill();
     
     barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
-    if(enemies.countDead( == totalEnemies && lives.countLiving() < 1))
+    if(enemies.countDead() == totalEnemies && lives.countLiving() < 1)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
         text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
