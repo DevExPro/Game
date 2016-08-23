@@ -198,6 +198,7 @@ function update () {
 
    // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 150);
+   enemies.forEach(rotateEnemies, this);
    
   //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
   
@@ -205,19 +206,10 @@ function update () {
    {
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
     }
-  
-
-
-   bar.context.clearRect(0,0, bar.width, bar.height);
-   if(barProgress < barLength/4) {
-       bar.context.fillStyle = '#f00';
-   }
-   else if(barProgress <barLength/2) {
-       bar.context.fillStyle = '#ff0';
-   }
-   else {
-        bar.context.fillStyle = '#0f0';
-   }
+    
+    bar.context.clearRect(0,0, bar.width, bar.height);
+    bar.context.fillStyle = '#0f0';
+        
     bar.context.fillRect(0,0, barProgress, 8);
     bar.dirty = true;
     
@@ -294,6 +286,12 @@ function update () {
         
     }
     
+}
+
+function rotateEnemies(enemy) {
+    enemy.update = function () {
+        enemy.angle = 180 - game.math.radToDeg(Math.atan2(enemy.body.velocity.x, enemy.body.velocity.y));
+    }
 }
     
 function render() {
@@ -464,7 +462,7 @@ function collisionHandler (bullet, enemy) {
     if(enemies.countDead() == totalEnemies)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        text = game.add.text(0, 0, "Wiiiiinnnner", style);
+        text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
     }
 }
 
