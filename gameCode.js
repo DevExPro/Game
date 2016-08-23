@@ -273,7 +273,7 @@ function update () {
     
    if(hit == 1 && lives.countLiving() >= 1)
     {
-     /*  if(flashPlayer > 5)
+       if(flashPlayer > 5)
         {
             player.visible = false;
             flashPlayer = 0;
@@ -282,7 +282,7 @@ function update () {
         {
             player.visible = true;
             ++flashPlayer;
-        }*/
+        }
         
     }
     
@@ -448,7 +448,7 @@ function collisionHandler (bullet, enemy) {
     explosion.animations.play('boomExplode', 15, true);
     
     chance = game.rnd.integerInRange(1, 100);
-    if(chance < 50){
+    if(chance < 30){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }
     explosion.lifespan = 275;
@@ -488,7 +488,9 @@ function playerHit (player, enemy) {
      {
          var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
          var explode = playerDeath.animations.add('playerBoom');
-        playerDeath.killonComplete = true;
+        explode.onComplete.add(function() {
+            playerDeath.kill();
+        });
         playerDeath.animations.play('playerBoom', 15);
       player.kill();
       gameOver = 1;
@@ -519,7 +521,7 @@ function spawnEnemy (x, y){
 
 
 function levelOne(){
-    totalEnemies = 35;
+    totalEnemies = 29;
    /* for(var i = 0; i < 3; i++){
         game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
     }*/
