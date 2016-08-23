@@ -137,7 +137,7 @@ function create () {
    
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
-    player.body.drag.set(55);
+    player.body.drag.set(80);
     player.body.maxVelocity.set(300);
    
   /////////////////// Bullets Section ////////////////////// 
@@ -293,7 +293,7 @@ function rotateEnemies(enemy) {
 }
     
 function render() {
-        game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
+      //a  game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
 
@@ -488,8 +488,8 @@ function playerHit (player, enemy) {
      {
          var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
          var explode = playerDeath.animations.add('playerBoom');
-        explode.killonComplete = true;
-        playerDeath.animations.play('playerBoom', 15, true);
+        playerDeath.killonComplete = true;
+        playerDeath.animations.play('playerBoom', 15);
       player.kill();
     //  gameOver = 1;
     //  style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
@@ -525,13 +525,13 @@ function levelOne(){
     }*/
     spawnTL(5);
     spawnBL(5);
-    game.time.events.add(6000, spawnBL, this, 5);
-    game.time.events.add(6000, spawnBR, this, 5);
-    game.time.events.add(12000, spawnTL, this, 5);
-    game.time.events.add(12000, spawnTR, this, 5);
-    game.time.events.add(18000, spawnML, this, 5);
-    game.time.events.add(18000, spawnMR, this, 5);
-    game.time.events.add(18000, spawnBM, this, 5);
+    game.time.events.add(6000, spawnBL, this, 3);
+    game.time.events.add(6000, spawnBR, this, 3);
+    game.time.events.add(12000, spawnTL, this, 4);
+    game.time.events.add(12000, spawnTR, this, 4);
+    game.time.events.add(18000, spawnML, this, 3);
+    game.time.events.add(18000, spawnMR, this, 3);
+    game.time.events.add(18000, spawnBM, this, 3);
 
 
 }
