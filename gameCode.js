@@ -158,7 +158,8 @@ function create () {
         b.checkWorldBounds = true;
         b.events.onOutOfBounds.add(resetBullet, this);
     }
-    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+   // fireButton = game.input.keyboard.addKey(Phaser.KeyCode.);
+   thrustButton = game.input.keyboard.addKey(Phaser.KeyCode.W);
    
   ////////////// We are in The Beam ////////////////////////
  /*   beams = game.add.group();
@@ -194,12 +195,12 @@ function update () {
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
-   // enemies.rotation = game.physics.arcade.moveToObject(enemies, 1000, player, 500);
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 125);
    enemies.forEach(rotateEnemies, this);
+       player.rotation = game.physics.arcade.angleToPointer(player);
+
    
-  //   enemies.forEach(this.rotation = this.game.physics.arcade.angleBetween, game.physics.arcade, false, player); //(enemy, player);
-  
+
   if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
    {
        console.log("HERE");
@@ -223,9 +224,9 @@ function update () {
     
     
     //////////////////  Buttons ////////////////////
-    if (cursors.up.isDown)
+    if (thrustButton.isDown)
     {
-       game.physics.arcade.accelerationFromRotation(player.rotation, 400, player.body.acceleration);
+       game.physics.arcade.accelerationFromRotation(player.rotation, 500, player.body.acceleration);
        emitterLeft.emitParticle();
        emitterRight.emitParticle();
         //player.body.velocity.y = -400;
@@ -234,7 +235,7 @@ function update () {
     {
        player.body.acceleration.set(0);
     }
-    if(cursors.left.isUp || cursors.right.isUp)
+    /*if(cursors.left.isUp || cursors.right.isUp)
     {
         if (cursors.left.isDown && cursors.right.isUp)
         {
@@ -264,9 +265,9 @@ function update () {
         {
             player.body.angularVelocity = 0;
         }
-    }
+    }*/
     
-    if(fireButton.isDown && gameOver != 1)
+    if(game.input.activePointer.isDown && gameOver != 1)
     {
          preFire(fireMode);
     }
@@ -294,13 +295,19 @@ function update () {
 
 function rotateEnemies(enemy) {
         enemy.angle = 180 - game.math.radToDeg(Math.atan2(enemy.body.velocity.x, enemy.body.velocity.y));
+        enemy.anchor.setTo(0.5, 0.5);
 }
     
 function render() {
       //a  game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
+  //     game.debug.body(player);
+    //    enemies.forEach(showEnemyBox, this);
+}
 
+function showEnemyBox(enemy) {
+    game.debug.body(enemy);
 }
 
 
@@ -526,13 +533,33 @@ function spawnEnemy (x, y){
     enemies.create(x, y, 'enemy');
 }
 
+/*
+function spawnLocation(enemyCount, x, y){
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.event.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+*/
 
 
 function levelOne(){
+    
+
+
     totalEnemies = 29;
    /* for(var i = 0; i < 3; i++){
         game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
     }*/
+    
+    /* 
+    
+    spawnLocation(3, 0, 0);
+    spawnLocation(3, gameHeight, 0);
+    
+    */
+    
+    
     spawnTL(3);
     spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
@@ -631,6 +658,7 @@ function spawnBR(enemyCount){
         game.time.events.add(500 * j, spawnEnemy, this, x, y);
     }
 }
+
 }
 
 function countDown(time){
