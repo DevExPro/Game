@@ -14,6 +14,7 @@ function preload () {
   game.load.image('powerUp', '../images/lightning2.png');
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
+  game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
 }
 
 var bulletTime = 0;
@@ -224,7 +225,7 @@ function update () {
     //////////////////  Buttons ////////////////////
     if (cursors.up.isDown)
     {
-       game.physics.arcade.accelerationFromRotation(player.rotation, 300, player.body.acceleration);
+       game.physics.arcade.accelerationFromRotation(player.rotation, 400, player.body.acceleration);
        emitterLeft.emitParticle();
        emitterRight.emitParticle();
         //player.body.velocity.y = -400;
@@ -272,7 +273,7 @@ function update () {
     
    if(hit == 1 && lives.countLiving() >= 1)
     {
-       if(flashPlayer > 5)
+     /*  if(flashPlayer > 5)
         {
             player.visible = false;
             flashPlayer = 0;
@@ -281,7 +282,7 @@ function update () {
         {
             player.visible = true;
             ++flashPlayer;
-        }
+        }*/
         
     }
     
@@ -403,7 +404,7 @@ function fireBullet (fireAngle) {
 
             bullet.reset(player.x , player.y);
  
-            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 900, bullet.body.velocity);
+            game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 1000, bullet.body.velocity);
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
@@ -480,20 +481,20 @@ function playerHit (player, enemy) {
          lifeHeart.kill();
             console.log("Player still has a life");
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
-      }                                                                                                                  // player from flashing
-      else {
-         // player.tint = '#ff0';
-         console.log("OH Nooooooo, player has no more lives");
       }
       checkPlayerCollision = 0;
                                                                                 
- /*     if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
+      if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
+         var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
+         var explode = playerDeath.animations.add('playerBoom');
+        explode.killonComplete = true;
+        playerDeath.animations.play('playerBoom', 15, true);
       player.kill();
-      gameOver = 1;
-      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-      text = game.add.text(0,0, "GAME OVER", style);
-     }*/
+    //  gameOver = 1;
+    //  style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+    //  text = game.add.text(0,0, "GAME OVER", style);
+     }
 }
 
 
@@ -505,18 +506,34 @@ function resetHit () {
 
 //////////////////////// Spawn Enemies Function ///////////////////////
 
-function spawnEnemy (itteration, topOrBot){
+/*function spawnEnemy (itteration, topOrBot){
     
      
     var enemy = enemies.create(gameWidth/4 * itteration, topOrBot, 'enemy');
 
+}*/
+function spawnEnemy (x, y){
+    enemies.create(x, y, 'enemy');
 }
 
+
+
 function levelOne(){
-    totalEnemies = 15;
-    for(var i = 0; i < 3; i++){
+    totalEnemies = 35;
+   /* for(var i = 0; i < 3; i++){
         game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
-    }
+    }*/
+    spawnTL(5);
+    spawnBL(5);
+    game.time.events.add(6000, spawnBL, this, 5);
+    game.time.events.add(6000, spawnBR, this, 5);
+    game.time.events.add(12000, spawnTL, this, 5);
+    game.time.events.add(12000, spawnTR, this, 5);
+    game.time.events.add(18000, spawnML, this, 5);
+    game.time.events.add(18000, spawnMR, this, 5);
+    game.time.events.add(18000, spawnBM, this, 5);
+
+
 }
 
 function levelTwo(){
@@ -537,7 +554,74 @@ function spawnTop(itteration, enemyCount){
         game.time.events.add(500 * j, spawnEnemy, this, itteration, topOrBot);
     }
 }
+{
+function spawnTL(enemyCount){
+    var x = 0, y = 0;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
 
+function spawnML(enemyCount){
+    var x = 0, y = gameHeight/2;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+function spawnBL(enemyCount){
+    var x = 0, y = gameHeight;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+function spawnTM(enemyCount){
+    var x = gameWidth/2, y = 0;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+function spawnBM(enemyCount){
+    var x = gameWidth/2, y = gameHeight;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+function spawnTR(enemyCount){
+    var x = gameWidth, y = 0;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+function spawnMR(enemyCount){
+    var x = gameWidth, y = gameHeight/2;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+
+function spawnBR(enemyCount){
+    var x = gameWidth, y = gameHeight;
+    
+    for(var j = 0; j < enemyCount; j++)
+    {
+        game.time.events.add(500 * j, spawnEnemy, this, x, y);
+    }
+}
+}
 
 function countDown(time){
     var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
