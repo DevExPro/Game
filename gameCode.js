@@ -16,6 +16,7 @@ function preload () {
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
   game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52, 2);
+  game.load.image('title', '../images/evasion2.png');
   
 //  create: function(){
        //   this.state.start('MainMenu');
@@ -43,6 +44,7 @@ var totalEnemies;
 function create () {
     
     //background = game.add.sprite(0, 0, 'background');
+    titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
 
     ///////////////// The Bar /////////////////////////////
     barLength = gameWidth/3;
@@ -82,6 +84,7 @@ function create () {
             if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
                 game.paused = false;
                 button.kill();
+                titleBack.kill();
                 
             }
         }
