@@ -15,6 +15,14 @@ function preload () {
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
+  game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52, 2);
+  
+//  create: function(){
+       //   this.state.start('MainMenu');
+
+  //}
+      
+
 }
 
 var bulletTime = 0;
@@ -29,12 +37,13 @@ var gameOver = 0;
 var fireMode;
 var power;
 var beam;
+var playButton;
 var gameStartTimer;
 var totalEnemies;
 function create () {
-    bakground = game.add.sprite(0, 0, 'background');
     
-    
+    //background = game.add.sprite(0, 0, 'background');
+
     ///////////////// The Bar /////////////////////////////
     barLength = gameWidth/3;
     barProgress = barLength;
@@ -57,20 +66,28 @@ function create () {
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
-    button = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+    //button = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+    button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
     button.anchor.setTo(0.5, 0.5);
     button.onInputOver.add(over, this);
     button.onInputOut.add(out, this);
     button.onInputUp.add(up, this);
-    
-    game.input.onDown.add(unpause, self);
+    game.paused = true;    
+     game.input.onDown.add(unpause, self);
 
     function unpause(event){
         if(game.paused){
-            game.paused = false;
+            var x1 = gameWidth/2 - 180/2, x2 = gameWidth/2 + 180/2,
+                y1 = gameHeight/2 - 50/2, y2 = gameHeight/2 + 50/2;
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                game.paused = false;
+                button.kill();
+                
+            }
         }
     }
-
+    ///////////////// Main Menu Buttons ////////////////////
+   
 
 
   ///////////////// Player Lives Section ///////////
@@ -138,7 +155,7 @@ function create () {
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
     player.body.drag.set(80);
-    player.body.maxVelocity.set(300);
+    player.body.maxVelocity.set(350);
    
   /////////////////// Bullets Section ////////////////////// 
     bullets = game.add.group();
@@ -187,6 +204,7 @@ function create () {
     
     
     checkPlayerCollision = 0;
+    
 }
 
 function update () {
@@ -203,7 +221,6 @@ function update () {
 
   if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
    {
-       console.log("HERE");
        ++checkPlayerCollision;
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
         checkPlayerCollision = 0;
@@ -304,6 +321,7 @@ function render() {
        //game.debug.spriteInfo(explosion, 32, 32);
   //     game.debug.body(player);
     //    enemies.forEach(showEnemyBox, this);
+   // game.debug.text('Game time now: ' + game.time.now, 32, 32);
 }
 
 function showEnemyBox(enemy) {
@@ -328,6 +346,21 @@ function showEnemyBox(enemy) {
         console.log('button out');
     }
     
+    //////////////// Main Menu //////////////////////
+function showMenu(){
+         playButton = game.add.button(gameWidth/2, gameHeight/2 - 200, 'playButton', playClick, this);
+
+   game.paused = true;
+   // playButton = game.add.button(gameWidth/2, gameHeight/2, 'playButton');
+}
+
+function playClick(){
+    //if(game.paused == true){
+        game.paused = false;
+    //}
+    playButton.kill;
+}
+
     
 
 /////////////////// Bullet Functions ///////////////////////
@@ -475,7 +508,9 @@ function collisionHandler (bullet, enemy) {
     else if(enemies.countDead() == totalEnemies)
     {
         style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
+       // text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
+       var textWinner = "You have won.";
+       var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
     }
 }
 
@@ -510,7 +545,12 @@ function playerHit (player, enemy) {
       player.kill();
       gameOver = 1;
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-      text = game.add.text(0,0, "GAME OVER", style);
+    //  text = game.add.text(0,0, "GAME OVER", style);
+    var textToAdd = "GAME OVER";
+    console.log(textToAdd.textWidth);
+    console.log(textToAdd.textHeight);
+            var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
+    
      }
 }
 
@@ -521,7 +561,7 @@ function resetHit () {
     game.time.events.remove(hitTimer);
 }
 
-//////////////////////// Spawn Enemies Function ///////////////////////
+//////////////////////// Spawn Enemies Functions ///////////////////////
 
 /*function spawnEnemy (itteration, topOrBot){
     
@@ -533,33 +573,10 @@ function spawnEnemy (x, y){
     enemies.create(x, y, 'enemy');
 }
 
-/*
-function spawnLocation(enemyCount, x, y){
-    for(var j = 0; j < enemyCount; j++)
-    {
-        game.time.event.add(500 * j, spawnEnemy, this, x, y);
-    }
-}
-*/
 
 
 function levelOne(){
-    
-
-
     totalEnemies = 53;
-   /* for(var i = 0; i < 3; i++){
-        game.time.events.add(5000 * i, spawnTop, this, i + 1, 5);
-    }*/
-    
-    /* 
-    
-    spawnLocation(3, 0, 0);
-    spawnLocation(3, gameHeight, 0);
-    
-    */
-    
-    
     spawnTL(3);
     spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
@@ -575,6 +592,7 @@ function levelOne(){
     game.time.events.add(18000, spawnTR, this, 4);
     game.time.events.add(18000, spawnBL, this, 4);
     game.time.events.add(18000, spawnBR, this, 4);
+      
 
 
 }
