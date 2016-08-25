@@ -15,14 +15,12 @@ function preload () {
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
-  game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52, 2);
+  game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52);
   game.load.image('title', '../images/evasion2.png');
   game.load.image('gameOver', '../images/gameOverTitle.png');
+  game.load.image('winTitle', '../images/victory.png');
   
-//  create: function(){
-       //   this.state.start('MainMenu');
 
-  //}
       
 
 }
@@ -48,7 +46,6 @@ function create () {
     //background = game.add.sprite(0, 0, 'background');
     titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
-    playText = game.add.text(gameWidth/2, gameHeight/2, "Play");
     playButton.anchor.setTo(0.5, 0.5);
     
     game.paused = true;
@@ -92,7 +89,7 @@ function create () {
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
-  //  pauseButton.anchor.setTo(0.5, 1);
+   // pauseButton.anchor.setTo(1, 1);
     pauseButton.onInputOver.add(over, this);
     pauseButton.onInputOut.add(out, this);
     pauseButton.onInputUp.add(up, this);
@@ -232,6 +229,7 @@ function update () {
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
+//    if(gameOver == 0)
    enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
    enemies.forEach(rotateEnemies, this);
        player.rotation = game.physics.arcade.angleToPointer(player);
@@ -527,10 +525,11 @@ function collisionHandler (bullet, enemy) {
     }
     else if(enemies.countDead() == totalEnemies)
     {
-        style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+      //  style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
        // text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
-       var textWinner = "You have won.";
-       var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
+   //    var textWinner = "You have won.";
+    //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
+    var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
     }
 }
 
@@ -567,7 +566,7 @@ function playerHit (player, enemy) {
     //  text = game.add.text(0,0, "GAME OVER", style);
    // var textToAdd = "GAME OVER";
      //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
-    var overTitle = game.add.sprite((gameWidth/2) - 399, (gameHeight/2) - 174, 'gameOver');
+    var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
      }
 }
 
