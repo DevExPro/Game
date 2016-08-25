@@ -17,7 +17,7 @@ function preload () {
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
   game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52, 2);
   game.load.image('title', '../images/evasion2.png');
-  game.load.image('gameOver', '../images/gameOverTitle');
+  game.load.image('gameOver', '../images/gameOverTitle.png');
   
 //  create: function(){
        //   this.state.start('MainMenu');
@@ -49,7 +49,7 @@ function create () {
     titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playText = game.add.text(gameWidth/2, gameHeight/2, "Play");
-    playButton.anchor.setTo(1, 0.5);
+    playButton.anchor.setTo(0.5, 0.5);
     
     game.paused = true;
     game.input.onDown.add(play, self);
@@ -549,7 +549,6 @@ function playerHit (player, enemy) {
     if(lifeHeart) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
-            console.log("Player still has a life");
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
       }
       checkPlayerCollision = 0;
