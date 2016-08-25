@@ -28,7 +28,7 @@ function preload () {
 
 var bulletTime = 0;
 var bullet;
-var button;
+var pauseButton;
 var explosion;
 var player;
 var timer;
@@ -41,10 +41,31 @@ var beam;
 var playButton;
 var gameStartTimer;
 var totalEnemies;
+var pausePressed;
 function create () {
     
     //background = game.add.sprite(0, 0, 'background');
     titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
+    playButton = game.add.button(gameWidth/2, gameHeight/2, 'playButton', play, this, 2, 1, 0);
+    playText = game.add.text(gameWidth/2, gameHeight/2, "Play");
+    playText.anchor.setTo(0.5, 0.5);
+    playButton.anchor.setTo(0.5, 0.5);
+    game.paused = true;
+    game.input.onDown.add(play, self);
+    
+        ///////////////// Main Menu Buttons ////////////////////
+    function play(event){
+       if(game.paused){
+            var x1 = gameWidth/2 - 180/2, x2 = gameWidth/2 + 180/2,
+                y1 = gameHeight/2 - 50/2, y2 = gameHeight/2 + 50/2;
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                game.paused = false;
+                playButton.kill();
+                titleBack.kill();
+                
+            }
+        }
+    }
 
     ///////////////// The Bar /////////////////////////////
     barLength = gameWidth/3;
@@ -68,29 +89,23 @@ function create () {
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
-    //button = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
-    button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
-    button.anchor.setTo(0.5, 0.5);
-    button.onInputOver.add(over, this);
-    button.onInputOut.add(out, this);
-    button.onInputUp.add(up, this);
-    game.paused = true;    
+    pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+    //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
+    pauseButton.anchor.setTo(0.5, 0.5);
+    pauseButton.onInputOver.add(over, this);
+    pauseButton.onInputOut.add(out, this);
+    pauseButton.onInputUp.add(up, this);
      game.input.onDown.add(unpause, self);
 
     function unpause(event){
-        if(game.paused){
-            var x1 = gameWidth/2 - 180/2, x2 = gameWidth/2 + 180/2,
-                y1 = gameHeight/2 - 50/2, y2 = gameHeight/2 + 50/2;
-            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
-                game.paused = false;
-                button.kill();
-                titleBack.kill();
+        if(game.paused && pausePressed){
+            game.paused = false;
+            pausePressed = false;
                 
             }
         }
-    }
-    ///////////////// Main Menu Buttons ////////////////////
-   
+    
+
 
 
   ///////////////// Player Lives Section ///////////
@@ -334,6 +349,7 @@ function showEnemyBox(enemy) {
 
     /////////////////// Buttons /////////////////////
     function actionOnClick (){
+        pausePressed = true;
         game.paused = true;
     }
     
