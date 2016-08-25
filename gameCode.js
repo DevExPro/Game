@@ -15,7 +15,7 @@ function preload () {
   game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
-  game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52);
+  game.load.spritesheet('playButton', '../images/startButton2.png', 182, 52);
   game.load.image('title', '../images/evasion2.png');
   game.load.image('gameOver', '../images/gameOverTitle.png');
   game.load.image('winTitle', '../images/victory.png');
