@@ -17,6 +17,7 @@ function preload () {
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
   game.load.spritesheet('playButton', '../images/menuButton.png', 182, 52, 2);
   game.load.image('title', '../images/evasion2.png');
+  game.load.image('gameOver', '../images/gameOverTitle');
   
 //  create: function(){
        //   this.state.start('MainMenu');
@@ -46,18 +47,18 @@ function create () {
     
     //background = game.add.sprite(0, 0, 'background');
     titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
-    playButton = game.add.button(gameWidth/2, gameHeight/2, 'playButton', play, this, 2, 1, 0);
+    playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playText = game.add.text(gameWidth/2, gameHeight/2, "Play");
-    playText.anchor.setTo(0.5, 0.5);
-    playButton.anchor.setTo(0.5, 0.5);
+    playButton.anchor.setTo(1, 0.5);
+    
     game.paused = true;
     game.input.onDown.add(play, self);
     
         ///////////////// Main Menu Buttons ////////////////////
     function play(event){
        if(game.paused){
-            var x1 = gameWidth/2 - 180/2, x2 = gameWidth/2 + 180/2,
-                y1 = gameHeight/2 - 50/2, y2 = gameHeight/2 + 50/2;
+            var x1 = gameWidth/2 - 182/2, x2 = gameWidth/2 + 182/2,
+                y1 = gameHeight/2 - 52/2, y2 = gameHeight/2 + 52/2;
             if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
                 game.paused = false;
                 playButton.kill();
@@ -91,7 +92,7 @@ function create () {
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
-    pauseButton.anchor.setTo(0.5, 0.5);
+  //  pauseButton.anchor.setTo(0.5, 1);
     pauseButton.onInputOver.add(over, this);
     pauseButton.onInputOut.add(out, this);
     pauseButton.onInputUp.add(up, this);
@@ -565,11 +566,9 @@ function playerHit (player, enemy) {
       gameOver = 1;
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
     //  text = game.add.text(0,0, "GAME OVER", style);
-    var textToAdd = "GAME OVER";
-    console.log(textToAdd.textWidth);
-    console.log(textToAdd.textHeight);
-            var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
-    
+   // var textToAdd = "GAME OVER";
+     //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
+    var overTitle = game.add.sprite((gameWidth/2) - 399, (gameHeight/2) - 174, 'gameOver');
      }
 }
 
