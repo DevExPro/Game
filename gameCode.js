@@ -108,9 +108,9 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(74, gameHeight - 26, 'heart');
-    life = lives.create(42, gameHeight - 26, 'heart');
-    life = lives.create(9, gameHeight - 26, 'heart');
+    life = lives.create(74, gameHeight - 35, 'heart');
+    life = lives.create(42, gameHeight - 35, 'heart');
+    life = lives.create(9, gameHeight - 35, 'heart');
     life = lives.create(0, 0);
 
 
@@ -602,7 +602,7 @@ function playerHit (player, enemy) {
    // var textToAdd = "GAME OVER";
      //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
     var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
-    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 100, 'restartButton', restart, this, 2, 1, 0);
+    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 200, 'restartButton', restart, this, 2, 1, 0);
     reButton.anchor.setTo(0.5, 0.5);
     enemies.setAll('body.velocity.x', 600);
 
