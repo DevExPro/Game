@@ -128,11 +128,13 @@ function create () {
     emitterRight.makeParticles('fire');
     player.addChild(emitterLeft);
     player.addChild(emitterRight);
+    
     shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
     shield.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enableBody(shield);
     shield.body.immovable = true;
     shield.body.setSize(43, 43, 21, 21);
+    shield.visible = false;
     
     emitterLeft.y = 16;
     emitterLeft.x = -10;
@@ -238,7 +240,6 @@ function create () {
     
     checkPlayerCollision = 0;
     
-    powerMove();
 }
 
 
@@ -361,18 +362,14 @@ function update () {
 function shieldPower (player, shieldPower) {
     console.log("Adding the shield");
     player.hittable = false;
-    pickShield.kill();
-    shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
-    shield.anchor.setTo(0.5, 0.5);
-    game.physics.arcade.enableBody(shield);
-    shield.body.immovable = true;
-    shield.body.setSize(43, 43, 21, 21);
+    shieldPower.kill();
+    shield.visible = true;
     shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeShield, this);
 }
 
 function removeShield () {
     console.log("Removing the shield!");
-    shield.kill();
+    shied.visible = false;
     player.hittable = true;
     game.time.events.remove(shieldTimer);
 }
@@ -635,7 +632,7 @@ function playerHit (player, enemy) {
     hit = 1; // Indicates that the player has been hit
     var lifeHeart = lives.getFirstAlive();
     
-    if(lifeHeart && player.hittable === false) // If the player has a life, it will be removed
+    if(lifeHeart && player.hittable == false) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
@@ -696,12 +693,13 @@ function spawnEnemy (x, y){
 
 
 function levelOne(){
-    //totalEnemies = 53;
-    totalEnemies = 3;
+    totalEnemies = 53;
+    //totalEnemies = 3;
     spawnTL(3);
-    /*spawnBL(3);
+    spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
+    game.time.events.add(9000, powerMove, this);
     game.time.events.add(12000, spawnTL, this, 4);
     game.time.events.add(12000, spawnTR, this, 4);
     game.time.events.add(12000, spawnBM, this, 4);
@@ -712,7 +710,7 @@ function levelOne(){
     game.time.events.add(18000, spawnTL, this, 4);
     game.time.events.add(18000, spawnTR, this, 4);
     game.time.events.add(18000, spawnBL, this, 4);
-    game.time.events.add(18000, spawnBR, this, 4);*/
+    game.time.events.add(18000, spawnBR, this, 4);
       
 
 
