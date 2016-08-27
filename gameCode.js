@@ -44,6 +44,7 @@ var restart;
 var gameStartTimer;
 var totalEnemies;
 var pausePressed;
+var hittable = true;
 
 function create () {
     
@@ -89,6 +90,7 @@ function create () {
     
     ////////////// Player Sprite ////////////////////
     pickShield = game.add.sprite(0, 0, 'playerShield');
+    game.physics.arcade.enableBody(pickShield);
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
@@ -359,18 +361,18 @@ function update () {
     
 }
 
-function shieldPower (player, shieldPower) {
+function shieldPower (player, pickShield) {
     console.log("Adding the shield");
-    player.hittable = false;
-    shieldPower.kill();
+    hittable = false;
+    pickShield.kill();
     shield.visible = true;
     shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeShield, this);
 }
 
 function removeShield () {
     console.log("Removing the shield!");
-    shied.visible = false;
-    player.hittable = true;
+    shield.visible = false;
+    hittable = true;
     game.time.events.remove(shieldTimer);
 }
 
@@ -629,10 +631,21 @@ function getPowerUp(player, power){
 
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
+    
+    if(hittable === false && shield.visible === true)
+    {
+        removeShield();
+        hit = 1;
+        hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
+        return;
+    }
+    
+    
+    
     hit = 1; // Indicates that the player has been hit
     var lifeHeart = lives.getFirstAlive();
     
-    if(lifeHeart && player.hittable == false) // If the player has a life, it will be removed
+    if(lifeHeart && hittable === true) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
@@ -657,7 +670,7 @@ function playerHit (player, enemy) {
     var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
     var reButton = game.add.button(gameWidth/2, gameHeight/2 + 200, 'restartButton', restart, this, 2, 1, 0);
     reButton.anchor.setTo(0.5, 0.5);
-    enemies.setAll('body.velocity.x', 600);
+    enemies.setAll('body.velocity.x', 850);
 
 
      }
@@ -682,7 +695,7 @@ function resetHit () {
 function powerMove(){
     sprite = powerEnemies.create(gameWidth/2, 30, 'powerEnemy');
    // var xLocation = game.rnd.integerInRange(-gameWidth/2, gameWidth/2);
-        sprite.body.moveTo(7000, gameHeight, 90);
+        sprite.body.moveTo(7000, gameHeight - 50, 90);
 
 }
 function spawnEnemy (x, y){
