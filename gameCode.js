@@ -21,7 +21,7 @@ function preload () {
   game.load.image('winTitle', '../images/victory.png');
   game.load.image('restartButton', '../images/restartButton.png');
   game.load.image('playerShield', '../images/shield.png');
-  game.load.image('powerEnemy', '../images/Ship4.png')
+  game.load.image('powerEnemy', '../images/Ship4.png');
 
       
 
@@ -44,6 +44,7 @@ var restart;
 var gameStartTimer;
 var totalEnemies;
 var pausePressed;
+
 function create () {
     
     //background = game.add.sprite(0, 0, 'background');
@@ -87,6 +88,7 @@ function create () {
     
     
     ////////////// Player Sprite ////////////////////
+    pickShield = game.add.sprite(0, 0, 'playerShield');
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
@@ -239,10 +241,15 @@ function create () {
     powerMove();
 }
 
+
+
+
+
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
    game.physics.arcade.overlap(bullets, powerEnemies, powerBulletCollide, null, this);
+   game.physics.arcade.overlap(player, pickShield, shieldPower, null, this);
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
@@ -349,6 +356,25 @@ function update () {
         player.visible = true;
     }
     
+}
+
+function shieldPower (player, shieldPower) {
+    console.log("Adding the shield");
+    player.hittable = false;
+    pickShield.kill();
+    shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
+    shield.anchor.setTo(0.5, 0.5);
+    game.physics.arcade.enableBody(shield);
+    shield.body.immovable = true;
+    shield.body.setSize(43, 43, 21, 21);
+    shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeShield, this);
+}
+
+function removeShield () {
+    console.log("Removing the shield!");
+    shield.kill();
+    player.hittable = true;
+    game.time.events.remove(shieldTimer);
 }
 
 function rotateEnemies(enemy) {
@@ -552,7 +578,7 @@ function powerBulletCollide(bullet, powerEnemy){
     explosion.reset(powerEnemy.body.x, powerEnemy.body.y);
     var explode = explosion.animations.add('boomExplode');
     explosion.animations.play('boomExplode', 15, true);
-    explosion.lifespan = 75;
+    explosion.lifespan = 275;
     powers.create(powerEnemy.body.x, powerEnemy.body.y, 'powerUp');
     powerEnemy.kill();
     
@@ -609,7 +635,7 @@ function playerHit (player, enemy) {
     hit = 1; // Indicates that the player has been hit
     var lifeHeart = lives.getFirstAlive();
     
-    if(lifeHeart) // If the player has a life, it will be removed
+    if(lifeHeart && player.hittable === false) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
