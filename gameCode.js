@@ -107,9 +107,9 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(67, gameHeight - 28, 'heart');
-    life = lives.create(35, gameHeight - 28, 'heart');
-    life = lives.create(3, gameHeight - 28, 'heart');
+    life = lives.create(110, gameHeight - 45, 'heart');
+    life = lives.create(78, gameHeight - 45, 'heart');
+    life = lives.create(45, gameHeight - 45, 'heart');
 
 
   ////////////////// Emitter section //////////////////
@@ -143,7 +143,6 @@ function create () {
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
-    enemies.forEach(setEnSpeed, this);
     
     gameStartTimer = game.time.create();
     var levelOneTimer = game.time.create();
@@ -231,17 +230,22 @@ function update () {
 
 //    if(gameOver == 0)
 //   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
-   enemies.forEach(getEnSpeed, this);
-   enemies.forEach(rotateEnemies, this);
+    if(player.alive){
+        enemies.forEach(getEnSpeed, this);
+        enemies.forEach(rotateEnemies, this);
+    }
+   
+   
        player.rotation = game.physics.arcade.angleToPointer(player);
 
    
 
-  if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
+ // if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
+ if(hit == 0)
    {
-       ++checkPlayerCollision;
+    //   ++checkPlayerCollision;
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
-        checkPlayerCollision = 0;
+      //  checkPlayerCollision = 0;
     }
     
     bar.context.clearRect(0,0, bar.width, bar.height);
@@ -342,11 +346,6 @@ function render() {
    // game.debug.text('Game time now: ' + game.time.now, 32, 32);
 }
 
-function setEnSpeed(enemy) {
-    
-    enemy.inSpeed = game.rnd.integerInRange(150, 250);
-    console.log("Speed of this enemy is: " + enemy.inSpeed);
-}
 
 function getEnSpeed(enemy) {
    if(typeof enemy.inSpeed === 'undefined')
@@ -368,6 +367,11 @@ function showEnemyBox(enemy) {
         pausePressed = true;
        // create();
         game.paused = true;
+    }
+    
+    function awaitRestart(){
+             game.input.onDown.add(restart, self);
+
     }
     
     function restart(){
@@ -553,6 +557,7 @@ function collisionHandler (bullet, enemy) {
    //    var textWinner = "You have won.";
     //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
     var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
+    awaitRestart();
     }
 }
 
@@ -590,6 +595,7 @@ function playerHit (player, enemy) {
    // var textToAdd = "GAME OVER";
      //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
     var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
+    awaitRestart();
      }
 }
 
