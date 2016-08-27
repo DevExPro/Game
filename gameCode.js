@@ -19,6 +19,7 @@ function preload () {
   game.load.image('title', '../images/evasion2.png');
   game.load.image('gameOver', '../images/gameOverTitle.png');
   game.load.image('winTitle', '../images/victory.png');
+  game.load.image('restartButton', '../images/restartButton.png');
   
 
       
@@ -107,9 +108,10 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(110, gameHeight - 45, 'heart');
-    life = lives.create(78, gameHeight - 45, 'heart');
-    life = lives.create(45, gameHeight - 45, 'heart');
+    life = lives.create(74, gameHeight - 45, 'heart');
+    life = lives.create(42, gameHeight - 45, 'heart');
+    life = lives.create(9, gameHeight - 45, 'heart');
+    life = lives.create(0, 0);
 
 
   ////////////////// Emitter section //////////////////
@@ -376,6 +378,9 @@ function showEnemyBox(enemy) {
     
     function restart(){
             this.game.destroy();
+            gameOver = 0;
+            fireMode = 1;
+            pausePressed = false;
         game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
     }
     
@@ -557,7 +562,8 @@ function collisionHandler (bullet, enemy) {
    //    var textWinner = "You have won.";
     //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
     var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
-    awaitRestart();
+    game.add.button(gameWidth/2, gameHeight/2, 'restartButton', restart, this, 2, 1, 0);
+
     }
 }
 
@@ -590,12 +596,16 @@ function playerHit (player, enemy) {
       playerDeath.animations.play('playerBoom', 15);
       player.kill();
       gameOver = 1;
+      
       style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
     //  text = game.add.text(0,0, "GAME OVER", style);
    // var textToAdd = "GAME OVER";
      //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
     var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
-    awaitRestart();
+    game.add.button(gameWidth/2, gameHeight/2 + 60, 'restartButton', restart, this, 2, 1, 0);
+    enemies.setAll('body.velocity.x', 600);
+
+
      }
 }
 
@@ -621,9 +631,10 @@ function spawnEnemy (x, y){
 
 
 function levelOne(){
-    totalEnemies = 53;
+    //totalEnemies = 53;
+    totalEnemies = 3;
     spawnTL(3);
-    spawnBL(3);
+    /*spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
     game.time.events.add(12000, spawnTL, this, 4);
@@ -636,7 +647,7 @@ function levelOne(){
     game.time.events.add(18000, spawnTL, this, 4);
     game.time.events.add(18000, spawnTR, this, 4);
     game.time.events.add(18000, spawnBL, this, 4);
-    game.time.events.add(18000, spawnBR, this, 4);
+    game.time.events.add(18000, spawnBR, this, 4);*/
       
 
 
