@@ -242,6 +242,7 @@ function create () {
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
+   game.physics.arcade.overlap(bullets, powerEnemies, powerBulletCollide, null, this);
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
@@ -549,7 +550,7 @@ function powerBulletCollide(bullet, powerEnemy){
     
     explosion = explosions.getFirstExists(false);
     explosion.reset(powerEnemy.body.x, powerEnemy.body.y);
-    powers.create(enemy.body.x, enemy.body.y, 'powerUp');
+    powers.create(powerEnemy.body.x, powerEnemy.body.y, 'powerUp');
 }
 
 
