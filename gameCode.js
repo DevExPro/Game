@@ -20,7 +20,7 @@ function preload () {
   game.load.image('gameOver', '../images/gameOverTitle.png');
   game.load.image('winTitle', '../images/victory.png');
   game.load.image('restartButton', '../images/restartButton.png');
-  game.load.image('playerShield', '../images/sheild.png');
+  game.load.image('playerShield', '../images/shield.png');
 
       
 
@@ -640,7 +640,7 @@ function resetHit () {
 
 function powerMove(){
     powerEnemies.create(gameWidth/2, -20, 'powerEnemy');
-    var xLocation = game.rnd.integerInRange(0, gameWidth);
+    var xLocation = game.rnd.integerInRange(-gameWidth/2, gameWidth/2);
         powerEnemy.body.moveTo(xLocation, gameHeight + 20, Phaser.ANGLE_RIGHT);
 
 }
