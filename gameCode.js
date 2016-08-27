@@ -12,7 +12,7 @@ function preload () {
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/lifeShip.png');
   game.load.image('powerUp', '../images/lightning2.png');
-  game.load.spritesheet('powerEnemy', '../images/laserBeam.png', 40, 16, 11);
+  game.load.spritesheet('beam', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
   game.load.spritesheet('playButton', '../images/startButton.png', 182, 52);
@@ -21,7 +21,7 @@ function preload () {
   game.load.image('winTitle', '../images/victory.png');
   game.load.image('restartButton', '../images/restartButton.png');
   game.load.image('playerShield', '../images/shield.png');
-  game.load.image('powerUp', '../images/Ship4.png');
+  game.load.image('powerEnemy', '../images/Ship4.png')
 
       
 
@@ -277,6 +277,7 @@ function update () {
     
     game.physics.arcade.collide(enemies);
     game.physics.arcade.collide(enemies, player);
+    game.physics.arcade.collide(enemies, shield);
     
     
     //////////////////  Buttons ////////////////////
