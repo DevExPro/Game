@@ -12,7 +12,7 @@ function preload () {
   game.load.image('enemy', '../images/enemyShip2.png');
   game.load.image('heart', '../images/lifeShip.png');
   game.load.image('powerUp', '../images/lightning2.png');
-  game.load.spritesheet('theBeam', '../images/laserBeam.png', 40, 16, 11);
+  game.load.spritesheet('powerEnemy', '../images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
   game.load.spritesheet('playButton', '../images/startButton.png', 182, 52);
@@ -20,7 +20,7 @@ function preload () {
   game.load.image('gameOver', '../images/gameOverTitle.png');
   game.load.image('winTitle', '../images/victory.png');
   game.load.image('restartButton', '../images/restartButton.png');
-  
+  game.load.image('playerShield', '../images/sheild.png');
 
       
 
@@ -39,12 +39,14 @@ var fireMode;
 var power;
 var beam;
 var playButton;
+var restart;
 var gameStartTimer;
 var totalEnemies;
 var pausePressed;
 function create () {
     
     //background = game.add.sprite(0, 0, 'background');
+    
     var titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playButton.anchor.setTo(0.5, 0.5);
@@ -108,9 +110,9 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(74, gameHeight - 35, 'heart');
-    life = lives.create(42, gameHeight - 35, 'heart');
-    life = lives.create(9, gameHeight - 35, 'heart');
+    life = lives.create(74, gameHeight - 34, 'heart');
+    life = lives.create(42, gameHeight - 34, 'heart');
+    life = lives.create(9, gameHeight - 34, 'heart');
     life = lives.create(0, 0);
 
 
@@ -123,6 +125,10 @@ function create () {
     emitterRight.makeParticles('fire');
     player.addChild(emitterLeft);
     player.addChild(emitterRight);
+    shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
+    shield.anchor.setTo(0.5, 0.5);
+    player.body.setSize(43, 43, 21, 21);
+    
     emitterLeft.y = 16;
     emitterLeft.x = -10;
       
@@ -157,6 +163,11 @@ function create () {
     levelOneTimer.add(3000, levelOne, this);
   //  gameStartTimer.start();
    // gameStartTimer.onComplete.add(levelOneTimer.start, this);
+   
+   powerEnemies = game.add.group();
+   powerEnemies = game.add.group();
+   enemies.physicsBodyType = Phaser.Physics.ARCADE;
+   
 
     levelOneTimer.start();
     
@@ -222,6 +233,7 @@ function create () {
     
     checkPlayerCollision = 0;
     
+    powerMove();
 }
 
 function update () {
@@ -625,9 +637,17 @@ function resetHit () {
     var enemy = enemies.create(gameWidth/4 * itteration, topOrBot, 'enemy');
 
 }*/
+
+function powerMove(){
+    powerEnemies.create(gameWidth/2, -20, 'powerEnemy');
+    var xLocation = game.rnd.integerInRange(0, gameWidth);
+        powerEnemy.body.moveTo(xLocation, gameHeight + 20, Phaser.ANGLE_RIGHT);
+
+}
 function spawnEnemy (x, y){
     enemies.create(x, y, 'enemy');
 }
+
 
 
 
@@ -658,19 +678,8 @@ function levelTwo(){
     
 }
 
-function spawnTop(itteration, enemyCount){
-    var chance = 0;
-    var topOrBot = 0;
-    
-    chance = game.rnd.integerInRange(0, 1);
-    if(chance == 1){
-       topOrBot = gameHeight; 
-    }
-    
-    for(var j = 0; j < enemyCount; j++)
-    {
-        game.time.events.add(500 * j, spawnEnemy, this, itteration, topOrBot);
-    }
+function powerSpawn(itteration, enemyCount){
+   powerEnemies.create(gameWidth/2, 0, 'powerEnemy');
 }
 {
 function spawnTL(enemyCount){
