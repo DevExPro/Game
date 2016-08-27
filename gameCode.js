@@ -21,6 +21,7 @@ function preload () {
   game.load.image('winTitle', '../images/victory.png');
   game.load.image('restartButton', '../images/restartButton.png');
   game.load.image('playerShield', '../images/shield.png');
+  game.load.image('powerUp', '../images/Ship4.png');
 
       
 
@@ -110,9 +111,9 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(74, gameHeight - 34, 'heart');
-    life = lives.create(42, gameHeight - 34, 'heart');
-    life = lives.create(9, gameHeight - 34, 'heart');
+    life = lives.create(74, gameHeight - 31, 'heart');
+    life = lives.create(42, gameHeight - 31, 'heart');
+    life = lives.create(9, gameHeight - 31, 'heart');
     life = lives.create(0, 0);
 
 
@@ -127,7 +128,9 @@ function create () {
     player.addChild(emitterRight);
     shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
     shield.anchor.setTo(0.5, 0.5);
-    player.body.setSize(43, 43, 21, 21);
+    game.physics.arcade.enableBody(shield);
+    shield.body.immovable = true;
+    shield.body.setSize(43, 43, 21, 21);
     
     emitterLeft.y = 16;
     emitterLeft.x = -10;
@@ -165,8 +168,8 @@ function create () {
    // gameStartTimer.onComplete.add(levelOneTimer.start, this);
    
    powerEnemies = game.add.group();
-   powerEnemies = game.add.group();
-   enemies.physicsBodyType = Phaser.Physics.ARCADE;
+   powerEnemies.enableBody =true;
+   powerEnemies.physicsBodyType = Phaser.Physics.ARCADE;
    
 
     levelOneTimer.start();
@@ -540,6 +543,14 @@ function resetBullet (bullet) {
     }
 }*/
 
+function powerBulletCollide(bullet, powerEnemy){
+    bullet.kill();
+    
+    explosion = explosions.getFirstExists(false);
+    explosion.reset(powerEnemy.body.x, powerEnemy.body.y);
+    powers.create(enemy.body.x, enemy.body.y, 'powerUp');
+}
+
 
 function collisionHandler (bullet, enemy) {
     var chance = 0;
@@ -639,9 +650,9 @@ function resetHit () {
 }*/
 
 function powerMove(){
-    powerEnemies.create(gameWidth/2, -20, 'powerEnemy');
-    var xLocation = game.rnd.integerInRange(-gameWidth/2, gameWidth/2);
-        powerEnemy.body.moveTo(xLocation, gameHeight + 20, Phaser.ANGLE_RIGHT);
+    sprite = powerEnemies.create(gameWidth/2, 30, 'powerEnemy');
+   // var xLocation = game.rnd.integerInRange(-gameWidth/2, gameWidth/2);
+        sprite.body.moveTo(7000, gameHeight, 90);
 
 }
 function spawnEnemy (x, y){
