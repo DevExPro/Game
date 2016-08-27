@@ -550,7 +550,12 @@ function powerBulletCollide(bullet, powerEnemy){
     
     explosion = explosions.getFirstExists(false);
     explosion.reset(powerEnemy.body.x, powerEnemy.body.y);
+    var explode = explosion.animations.add('boomExplode');
+    explosion.animations.play('boomExplode', 15, true);
+    explosion.lifespan = 75;
     powers.create(powerEnemy.body.x, powerEnemy.body.y, 'powerUp');
+    powerEnemy.kill();
+    
 }
 
 
@@ -566,10 +571,10 @@ function collisionHandler (bullet, enemy) {
     var explode = explosion.animations.add('boomExplode');
     explosion.animations.play('boomExplode', 15, true);
     
-    chance = game.rnd.integerInRange(1, 100);
+   /* chance = game.rnd.integerInRange(1, 100);
     if(chance < 30){
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
-    }
+    }*/
     explosion.lifespan = 275;
 
     enemy.kill();
