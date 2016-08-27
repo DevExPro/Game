@@ -60,7 +60,6 @@ function create () {
                 game.paused = false;
                 playButton.kill();
                 titleBack.kill();
-                
             }
         }
     }
@@ -144,6 +143,7 @@ function create () {
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
     enemies.setAll('body.collideWorldBounds', true);
+    enemies.forEach(setEnSpeed, this);
     
     gameStartTimer = game.time.create();
     var levelOneTimer = game.time.create();
@@ -230,7 +230,8 @@ function update () {
 
 
 //    if(gameOver == 0)
-   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
+//   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
+   enemies.forEach(getEnSpeed, this);
    enemies.forEach(rotateEnemies, this);
        player.rotation = game.physics.arcade.angleToPointer(player);
 
@@ -341,6 +342,21 @@ function render() {
    // game.debug.text('Game time now: ' + game.time.now, 32, 32);
 }
 
+function setEnSpeed(enemy) {
+    
+    enemy.inSpeed = game.rnd.integerInRange(150, 250);
+    console.log("Speed of this enemy is: " + enemy.inSpeed);
+}
+
+function getEnSpeed(enemy) {
+   if(typeof enemy.inSpeed === 'undefined')
+   {
+       enemy.inSpeed = game.rnd.integerInRange(150, 250);
+   }
+   game.physics.arcade.moveToObject(enemy, player, enemy.inSpeed);
+    return enemy.inSpeed;
+}
+
 function showEnemyBox(enemy) {
     game.debug.body(enemy);
 }
@@ -348,8 +364,15 @@ function showEnemyBox(enemy) {
 
     /////////////////// Buttons /////////////////////
     function actionOnClick (){
+    
         pausePressed = true;
+       // create();
         game.paused = true;
+    }
+    
+    function restart(){
+            this.game.destroy();
+        game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
     }
     
     function up() {
@@ -708,3 +731,4 @@ function countDown(time){
     text.lifespan = 965;
 
 }
+
