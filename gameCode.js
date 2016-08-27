@@ -45,7 +45,7 @@ var pausePressed;
 function create () {
     
     //background = game.add.sprite(0, 0, 'background');
-    titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
+    var titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playButton.anchor.setTo(0.5, 0.5);
     
@@ -108,9 +108,9 @@ function create () {
 
   ///////////////// Player Lives Section ///////////
     lives = game.add.group();
-    life = lives.create(74, gameHeight - 45, 'heart');
-    life = lives.create(42, gameHeight - 45, 'heart');
-    life = lives.create(9, gameHeight - 45, 'heart');
+    life = lives.create(74, gameHeight - 9, 'heart');
+    life = lives.create(42, gameHeight - 9, 'heart');
+    life = lives.create(9, gameHeight - 9, 'heart');
     life = lives.create(0, 0);
 
 
@@ -562,8 +562,8 @@ function collisionHandler (bullet, enemy) {
    //    var textWinner = "You have won.";
     //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
     var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
-    game.add.button(gameWidth/2, gameHeight/2, 'restartButton', restart, this, 2, 1, 0);
-
+    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 100, 'restartButton', restart, this, 2, 1, 0);
+    reButton.anchor.setTo(0.5, 0.5);
     }
 }
 
@@ -602,7 +602,8 @@ function playerHit (player, enemy) {
    // var textToAdd = "GAME OVER";
      //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
     var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
-    game.add.button(gameWidth/2, gameHeight/2 + 60, 'restartButton', restart, this, 2, 1, 0);
+    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 100, 'restartButton', restart, this, 2, 1, 0);
+    rebutton.anchor.setTo(0.5, 0.5);
     enemies.setAll('body.velocity.x', 600);
 
 
