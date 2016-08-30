@@ -23,6 +23,7 @@ function preload () {
   game.load.image('playerShield', '../images/shield.png');
   game.load.image('powerEnemy', '../images/Ship4.png');
   game.load.image('shieldMove', '../images/shieldMove.png');
+  game.load.audio('blaster', '../audio/SoundEffects/blaster.mp3');
 
       
 
@@ -34,6 +35,7 @@ var pauseButton;
 var explosion;
 var player;
 var timer;
+var blaster;
 var powerUp;
 var shootTimer;
 var gameOver = 0;
@@ -254,6 +256,9 @@ function create () {
     
     checkPlayerCollision = 0;
     
+    ///////////////// Audio ///////////////////////
+    blaster = game.add.audio('blaster');
+    
 }
 
 
@@ -319,11 +324,11 @@ function update () {
     }
     if(shieldLeft.isDown && shieldRight.isUp && moveableShield.visible === true)
     {
-        moveableShield.angle -= 3;
+        moveableShield.angle -= 5;
     }
     else if(shieldRight.isDown && shieldLeft.isUp && moveableShield.visible === true)
     {
-        moveableShield.angle += 3;
+        moveableShield.angle += 5;
     }
     /*if(cursors.left.isUp || cursors.right.isUp)
     {
@@ -360,6 +365,7 @@ function update () {
     if(game.input.activePointer.isDown && gameOver != 1)
     {
          preFire(fireMode);
+         
     }
     
    if(hit == 1 && lives.countLiving() >= 1)
@@ -576,6 +582,7 @@ function fireBullet (fireAngle) {
             bullet.reset(player.x , player.y);
  
             game.physics.arcade.velocityFromAngle(player.angle + fireAngle, 1000, bullet.body.velocity);
+            blaster.play();
             //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
 
            // bulletTime = game.time.now + fireRate;
