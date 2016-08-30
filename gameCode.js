@@ -23,7 +23,7 @@ function preload () {
   game.load.image('playerShield', '../images/shield.png');
   game.load.image('powerEnemy', '../images/Ship4.png');
   game.load.image('shieldMove', '../images/shieldMove.png');
-  game.load.audio('blaster', '../sounds/pistol.wav');
+  game.load.audio('blaster', '../sounds/blaster.mp3');
   game.load.audio('player_death', '../sounds/player_death.wav');
   game.load.audio('enemy_death', '../sounds/alien_death1.wav');
       
