@@ -22,6 +22,7 @@ function preload () {
   game.load.image('restartButton', '../images/restartButton.png');
   game.load.image('playerShield', '../images/shield.png');
   game.load.image('powerEnemy', '../images/Ship4.png');
+  game.load.image('shieldMove', '../images/shieldMove.png');
 
       
 
@@ -89,8 +90,10 @@ function create () {
     
     
     ////////////// Player Sprite ////////////////////
-    pickShield = game.add.sprite(0, 0, 'playerShield');
-    game.physics.arcade.enableBody(pickShield);
+//    pickShield = game.add.sprite(0, 0, 'playerShield');
+    moveItShield = game.add.sprite(0, 0, 'shieldMove');
+//    game.physics.arcade.enableBody(pickShield);
+    game.physics.arcade.enableBody(moveItShield);
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     
     /////////////// Pause Button ////////////////////
@@ -131,12 +134,19 @@ function create () {
     player.addChild(emitterLeft);
     player.addChild(emitterRight);
     
-    shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
+/*    shield = player.addChild(game.make.sprite(0, 0, 'playerShield'));
     shield.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enableBody(shield);
     shield.body.immovable = true;
     shield.body.setSize(43, 43, 21, 21);
-    shield.visible = false;
+    shield.visible = false;*/
+    
+    moveableShield = player.addChild(game.make.sprite(0, 0, 'shieldMove'));
+    moveableShield.anchor.setTo(0.5, 0.5);
+    game.physics.arcade.enableBody(moveableShield);
+    moveableShield.body.immovable = true;
+    moveableShield.body.setSize(43, 43, 21, 21);
+    moveableShield.visible = false;
     
     emitterLeft.y = 16;
     emitterLeft.x = -10;
@@ -214,6 +224,8 @@ function create () {
     }
    // fireButton = game.input.keyboard.addKey(Phaser.KeyCode.);
    thrustButton = game.input.keyboard.addKey(Phaser.KeyCode.W);
+   shieldLeft = game.input.keyboard.addKey(Phaser.KeyCode.A);
+   shieldRight = game.input.keyboard.addKey(Phaser.KeyCode.D);
    
   ////////////// We are in The Beam ////////////////////////
  /*   beams = game.add.group();
@@ -252,7 +264,8 @@ function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
    game.physics.arcade.overlap(bullets, powerEnemies, powerBulletCollide, null, this);
-   game.physics.arcade.overlap(player, pickShield, shieldPower, null, this);
+//   game.physics.arcade.overlap(player, pickShield, shieldPower, null, this);
+   game.physics.arcade.overlap(player, moveItShield, moveShield, null, this);
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
 
 
@@ -288,7 +301,8 @@ function update () {
     
     game.physics.arcade.collide(enemies);
     game.physics.arcade.collide(enemies, player);
-    game.physics.arcade.collide(enemies, shield);
+ //   game.physics.arcade.collide(enemies, shield);
+    game.physics.arcade.collide(enemies, moveableShield);
     
     
     //////////////////  Buttons ////////////////////
@@ -302,6 +316,14 @@ function update () {
     else
     {
        player.body.acceleration.set(0);
+    }
+    if(shieldLeft.isDown && shieldRight.isUp && moveableShield.visible === true)
+    {
+        moveableShield.angle -= 3;
+    }
+    else if(shieldRight.isDown && shieldLeft.isUp && moveableShield.visible === true)
+    {
+        moveableShield.angle += 3;
     }
     /*if(cursors.left.isUp || cursors.right.isUp)
     {
@@ -359,6 +381,19 @@ function update () {
         player.visible = true;
     }
     
+}
+
+function moveShield (player, moveItShield) {
+    console.log("Adding the moveable shield");
+    moveItShield.kill();
+    moveableShield.visible = true;
+    moveShieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeMoveShield, this);
+}
+
+function removeMoveShield () {
+    console.log("Removing the movabel shield");
+    moveableShield.visible = false;
+    game.time.events.remove(moveShieldTimer);
 }
 
 function shieldPower (player, pickShield) {
@@ -632,13 +667,13 @@ function getPowerUp(player, power){
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
     
-    if(hittable === false && shield.visible === true)
+ /*   if(hittable === false && shield.visible === true)
     {
         removeShield();
         hit = 1;
         hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
         return;
-    }
+    }*/
     
     
     
@@ -695,7 +730,7 @@ function resetHit () {
 function powerMove(){
     sprite = powerEnemies.create(gameWidth/2, 30, 'powerEnemy');
    // var xLocation = game.rnd.integerInRange(-gameWidth/2, gameWidth/2);
-        sprite.body.moveTo(7000, gameHeight - 50, 90);
+        sprite.body.moveTo(7000, gameHeight + 60, 90);
 
 }
 function spawnEnemy (x, y){
