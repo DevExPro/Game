@@ -315,7 +315,6 @@ function update () {
     if (thrustButton.isDown)
     {
        game.physics.arcade.accelerationFromRotation(player.rotation, 500, player.body.acceleration);
-       if()
        emitterLeft.emitParticle();
        emitterRight.emitParticle();
         //player.body.velocity.y = -400;
