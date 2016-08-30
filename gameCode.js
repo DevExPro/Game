@@ -24,7 +24,7 @@ function preload () {
   game.load.image('powerEnemy', '../images/Ship4.png');
   game.load.image('shieldMove', '../images/shieldMove.png');
   game.load.audio('blaster', '../sounds/blaster.mp3');
-
+  game.load.audio('player_death', '../sounds/player_death.wav');
       
 
 }
@@ -36,6 +36,7 @@ var explosion;
 var player;
 var timer;
 var blaster;
+var player_death;
 var powerUp;
 var shootTimer;
 var gameOver = 0;
@@ -97,6 +98,7 @@ function create () {
 //    game.physics.arcade.enableBody(pickShield);
     game.physics.arcade.enableBody(moveItShield);
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
+    oldDirection = player.rotation;
     
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
@@ -258,6 +260,7 @@ function create () {
     
     ///////////////// Audio ///////////////////////
     blaster = game.add.audio('blaster');
+    player_death = game.add.audio('player_death');
     
 }
 
@@ -281,8 +284,22 @@ function update () {
         enemies.forEach(rotateEnemies, this);
     }
    
-   
+        playerDirection = 0;
        player.rotation = game.physics.arcade.angleToPointer(player);
+       if(oldDirection - 0.025 <= player.rotation && oldDirection + 0.025 >= player.rotation)
+       {
+           console.log("old Dir: " + oldDirection + " newDir: " + player.rotation);
+           playerRotation = 0;
+       }
+       else if(oldDirection > player.rotation)
+       {
+          playerDirection = -1;
+       }
+       else if(oldDirection < player.rotation)
+       {
+           playerDirection = 1;
+       }
+       oldDirection = player.rotation;
     //   console.log("Rotation is: " + player.rotation);
 
    
@@ -315,8 +332,15 @@ function update () {
     if (thrustButton.isDown)
     {
        game.physics.arcade.accelerationFromRotation(player.rotation, 500, player.body.acceleration);
-       emitterLeft.emitParticle();
-       emitterRight.emitParticle();
+       if(playerDirection == -1)
+            emitterLeft.emitParticle();
+        else if(playerDirection == 1)
+            emitterRight.emitParticle();
+        else if(playerDirection == 0)
+        {
+            emitterLeft.emitParticle();
+            emitterRight.emitParticle();
+        }
         //player.body.velocity.y = -400;
     }
     else
@@ -391,20 +415,17 @@ function update () {
 }
 
 function moveShield (player, moveItShield) {
-    console.log("Adding the moveable shield");
     moveItShield.kill();
     moveableShield.visible = true;
     moveShieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeMoveShield, this);
 }
 
 function removeMoveShield () {
-    console.log("Removing the movabel shield");
     moveableShield.visible = false;
     game.time.events.remove(moveShieldTimer);
 }
 
 function shieldPower (player, pickShield) {
-    console.log("Adding the shield");
     hittable = false;
     pickShield.kill();
     shield.visible = true;
@@ -412,7 +433,6 @@ function shieldPower (player, pickShield) {
 }
 
 function removeShield () {
-    console.log("Removing the shield!");
     shield.visible = false;
     hittable = true;
     game.time.events.remove(shieldTimer);
@@ -703,6 +723,7 @@ function playerHit (player, enemy) {
             playerDeath.kill();
         });
       playerDeath.animations.play('playerBoom', 15);
+      player_death.play();
       player.kill();
       gameOver = 1;
       
@@ -749,10 +770,10 @@ function spawnEnemy (x, y){
 
 
 function levelOne(){
-    totalEnemies = 53;
-    //totalEnemies = 3;
+    //totalEnemies = 53;
+    totalEnemies = 3;
     spawnTL(3);
-    spawnBL(3);
+   /* spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
     game.time.events.add(9000, powerMove, this);
@@ -766,7 +787,7 @@ function levelOne(){
     game.time.events.add(18000, spawnTL, this, 4);
     game.time.events.add(18000, spawnTR, this, 4);
     game.time.events.add(18000, spawnBL, this, 4);
-    game.time.events.add(18000, spawnBR, this, 4);
+    game.time.events.add(18000, spawnBR, this, 4);*/
       
 
 
