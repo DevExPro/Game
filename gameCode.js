@@ -23,7 +23,7 @@ function preload () {
   game.load.image('playerShield', '../images/shield.png');
   game.load.image('powerEnemy', '../images/Ship4.png');
   game.load.image('shieldMove', '../images/shieldMove.png');
-  game.load.audio('blaster', '../audio/blaster.mp3');
+  game.load.audio('blaster', '../sounds/blaster.mp3');
 
       
 
@@ -283,6 +283,7 @@ function update () {
    
    
        player.rotation = game.physics.arcade.angleToPointer(player);
+    //   console.log("Rotation is: " + player.rotation);
 
    
 
@@ -314,6 +315,7 @@ function update () {
     if (thrustButton.isDown)
     {
        game.physics.arcade.accelerationFromRotation(player.rotation, 500, player.body.acceleration);
+       if()
        emitterLeft.emitParticle();
        emitterRight.emitParticle();
         //player.body.velocity.y = -400;
