@@ -25,6 +25,7 @@ function preload () {
   game.load.image('shieldMove', '../images/shieldMove.png');
   game.load.audio('blaster', '../sounds/blaster.mp3');
   game.load.audio('player_death', '../sounds/player_death.wav');
+  game.load.audio('enemy_death', '../sounds/alien_death1.wav');
       
 
 }
@@ -37,6 +38,7 @@ var player;
 var timer;
 var blaster;
 var player_death;
+var enemy_death;
 var powerUp;
 var shootTimer;
 var gameOver = 0;
@@ -261,6 +263,7 @@ function create () {
     ///////////////// Audio ///////////////////////
     blaster = game.add.audio('blaster');
     player_death = game.add.audio('player_death');
+    enemy_death = game.add.audio('enemy_death');
     
 }
 
@@ -288,8 +291,7 @@ function update () {
        player.rotation = game.physics.arcade.angleToPointer(player);
        if(oldDirection - 0.025 <= player.rotation && oldDirection + 0.025 >= player.rotation)
        {
-           console.log("old Dir: " + oldDirection + " newDir: " + player.rotation);
-           playerRotation = 0;
+           playerDirection = 0;
        }
        else if(oldDirection > player.rotation)
        {
@@ -300,16 +302,12 @@ function update () {
            playerDirection = 1;
        }
        oldDirection = player.rotation;
-    //   console.log("Rotation is: " + player.rotation);
 
    
 
- // if(hit == 0 && checkPlayerCollision == 0) // If it has been more than 2.5 seconds since the player was last hit 
  if(hit == 0)
    {
-    //   ++checkPlayerCollision;
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
-      //  checkPlayerCollision = 0;
     }
     
     bar.context.clearRect(0,0, bar.width, bar.height);
@@ -447,8 +445,9 @@ function render() {
       //a  game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
-  //     game.debug.body(player);
-    //    enemies.forEach(showEnemyBox, this);
+       game.debug.body(player);
+       game.debug.body(moveableShield);
+        enemies.forEach(showEnemyBox, this);
    // game.debug.text('Game time now: ' + game.time.now, 32, 32);
 }
 
@@ -664,7 +663,7 @@ function collisionHandler (bullet, enemy) {
        power =  powers.create(enemy.body.x, enemy.body.y, 'powerUp');
     }*/
     explosion.lifespan = 275;
-
+    enemy_death.play();
     enemy.kill();
     
     barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
