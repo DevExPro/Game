@@ -23,7 +23,7 @@ function preload () {
   game.load.image('playerShield', '../images/shield.png');
   game.load.image('powerEnemy', '../images/Ship4.png');
   game.load.image('shieldMove', '../images/shieldMove.png');
-  game.load.audio('blaster', '../sounds/blaster.mp3');
+  game.load.audio('blaster', '../sounds/pistol.wav');
   game.load.audio('player_death', '../sounds/player_death.wav');
   game.load.audio('enemy_death', '../sounds/alien_death1.wav');
       
@@ -151,7 +151,7 @@ function create () {
     moveableShield.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enableBody(moveableShield);
     moveableShield.body.immovable = true;
-    moveableShield.body.setSize(43, 43, 21, 21);
+   // moveableShield.body.setSize(43, 43, 21, 21);
     moveableShield.visible = false;
     
     emitterLeft.y = 16;
