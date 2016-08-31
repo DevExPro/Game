@@ -4,28 +4,28 @@ var gameHeight = window.innerHeight - 100;
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 function preload () {
-  game.load.image('background', '/images/back.png');
-  game.load.image('bullet', '../images/pewpew2.png');
-  game.load.image('fire', '../images/emit.png');
-  game.load.image('ship2', '../images/shipGreen.png');
-  game.load.spritesheet('boom1', '../images/expolode2.png', 39, 38, 7);
+  game.load.image('background', 'images/back.png');
+  game.load.image('bullet', 'images/pewpew2.png');
+  game.load.image('fire', 'images/emit.png');
+  game.load.image('ship2', 'images/shipGreen.png');
+  game.load.spritesheet('boom1', 'images/expolode2.png', 39, 38, 7);
   game.load.image('enemy', 'images/enemyShip2.png');
   game.load.image('heart', 'images/lifeShip.png');
-  game.load.image('powerUp', '../images/lightning2.png');
-  game.load.spritesheet('beam', '../images/laserBeam.png', 40, 16, 11);
-  game.load.spritesheet('pauseButton', '../images/pause.png', 36, 36, 2);
-  game.load.spritesheet('playerExplode', '../images/playerExplode.png', 100, 100, 8);
-  game.load.spritesheet('playButton', '../images/startButton.png', 182, 52);
-  game.load.image('title', '../images/evasion2.png');
-  game.load.image('gameOver', '../images/gameOverTitle.png');
-  game.load.image('winTitle', '../images/victory.png');
-  game.load.image('restartButton', '../images/restartButton2.png');
-  game.load.image('playerShield', '../images/shield.png');
-  game.load.image('powerEnemy', '../images/Ship4.png');
-  game.load.image('shieldMove', '../images/shieldMove.png');
-  game.load.audio('blaster', '../sounds/blaster.mp3');
-  game.load.audio('player_death', '../sounds/player_death.wav');
-  game.load.audio('enemy_death', '../sounds/alien_death1.wav');
+  game.load.image('powerUp', 'images/lightning2.png');
+  game.load.spritesheet('beam', 'images/laserBeam.png', 40, 16, 11);
+  game.load.spritesheet('pauseButton', 'images/pause.png', 36, 36, 2);
+  game.load.spritesheet('playerExplode', 'images/playerExplode.png', 100, 100, 8);
+  game.load.spritesheet('playButton', 'images/startButton.png', 182, 52);
+  game.load.image('title', 'images/evasion2.png');
+  game.load.image('gameOver', 'images/gameOverTitle.png');
+  game.load.image('winTitle', 'images/victory.png');
+  game.load.image('restartButton', 'images/restartButton2.png');
+  game.load.image('playerShield', 'images/shield.png');
+  game.load.image('powerEnemy', 'images/Ship4.png');
+  game.load.image('shieldMove', 'images/shieldMove.png');
+  game.load.audio('blaster', 'sounds/blaster.mp3');
+  game.load.audio('player_death', 'sounds/player_death.wav');
+  game.load.audio('enemy_death', 'sounds/alien_death1.wav');
       
 
 }
@@ -104,6 +104,7 @@ function create () {
     
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+    game.physics.arcade.enableBody(pauseButton);
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
    // pauseButton.anchor.setTo(1, 1);
     pauseButton.onInputOver.add(over, this);
@@ -446,6 +447,7 @@ function render() {
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
        game.debug.body(player);
+       game.debug.body(pauseButton);
        game.debug.body(moveableShield);
         enemies.forEach(showEnemyBox, this);
    // game.debug.text('Game time now: ' + game.time.now, 32, 32);
