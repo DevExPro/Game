@@ -15,11 +15,11 @@ function preload () {
   game.load.spritesheet('beam', 'images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', 'images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', 'images/playerExplode.png', 100, 100, 8);
-  game.load.spritesheet('playButton', 'images/startButton.png', 182, 52);
+  game.load.spritesheet('playButton', 'images/startButton3.png', 182, 52);
   game.load.image('title', 'images/evasion2.png');
   game.load.image('gameOver', 'images/gameOverTitle.png');
   game.load.image('winTitle', 'images/victory.png');
-  game.load.image('restartButton', 'images/restartButton2.png');
+  game.load.image('restartButton', 'images/restartButton4.png');
   game.load.image('playerShield', 'images/shield.png');
   game.load.image('powerEnemy', 'images/Ship4.png');
   game.load.image('shieldMove', 'images/shieldMove.png');
@@ -41,7 +41,6 @@ var player_death;
 var enemy_death;
 var powerUp;
 var shootTimer;
-var gameOver = 0;
 var fireMode;
 var power;
 var beam;
@@ -79,8 +78,8 @@ function create () {
     ///////////////// The Bar /////////////////////////////
     barLength = gameWidth/3;
     barProgress = barLength;
-    backRect = this.add.bitmapData((gameWidth/3) + 8, 16);
-    topRect = this.add.bitmapData((gameWidth/3) + 6, 14);
+    var backRect = this.add.bitmapData((gameWidth/3) + 8, 16);
+    var topRect = this.add.bitmapData((gameWidth/3) + 6, 14);
     game.add.sprite((gameWidth / 2) - (barLength /2) - 4, gameHeight - 54, backRect);
     game.add.sprite((gameWidth / 2) - (barLength /2) - 3, gameHeight - 53, topRect);
     
@@ -100,11 +99,11 @@ function create () {
 //    game.physics.arcade.enableBody(pickShield);
     game.physics.arcade.enableBody(moveItShield);
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
-    oldDirection = player.rotation;
+    player.oldDirection = player.rotation;
     
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
-    game.physics.arcade.enableBody(pauseButton);
+ //   pauseButton.enableBody = true;
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
    // pauseButton.anchor.setTo(1, 1);
     pauseButton.onInputOver.add(over, this);
@@ -124,11 +123,11 @@ function create () {
 
 
   ///////////////// Player Lives Section ///////////
-    lives = game.add.group();
-    life = lives.create(74, gameHeight - 31, 'heart');
-    life = lives.create(42, gameHeight - 31, 'heart');
-    life = lives.create(9, gameHeight - 31, 'heart');
-    life = lives.create(0, 0);
+    player.lives = game.add.group();
+    var life = player.lives.create(74, gameHeight - 31, 'heart');
+    life = player.lives.create(42, gameHeight - 31, 'heart');
+    life = player.lives.create(9, gameHeight - 31, 'heart');
+    life = player.lives.create(0, 0);
 
 
   ////////////////// Emitter section //////////////////
@@ -198,7 +197,7 @@ function create () {
     levelOneTimer.start();
     
   ////////////// Player Attributes Sction /////////////////
-    hit = 0;
+    player.hit = 0;
     flashPlayer = 0;
 
     //game.camera.follow(player);
@@ -288,25 +287,25 @@ function update () {
         enemies.forEach(rotateEnemies, this);
     }
    
-        playerDirection = 0;
+        player.newDirection = 0;
        player.rotation = game.physics.arcade.angleToPointer(player);
-       if(oldDirection - 0.025 <= player.rotation && oldDirection + 0.025 >= player.rotation)
+       if(player.oldDirection - 0.025 <= player.rotation && player.oldDirection + 0.025 >= player.rotation)
        {
-           playerDirection = 0;
+           player.newDirection = 0;
        }
-       else if(oldDirection > player.rotation)
+       else if(player.oldDirection > player.rotation)
        {
-          playerDirection = -1;
+          player.newDirection = -1;
        }
-       else if(oldDirection < player.rotation)
+       else if(player.oldDirection < player.rotation)
        {
-           playerDirection = 1;
+           player.newDirection = 1;
        }
-       oldDirection = player.rotation;
+       player.oldDirection = player.rotation;
 
    
 
- if(hit == 0)
+ if(player.hit == 0)
    {
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
     }
@@ -331,11 +330,11 @@ function update () {
     if (thrustButton.isDown)
     {
        game.physics.arcade.accelerationFromRotation(player.rotation, 500, player.body.acceleration);
-       if(playerDirection == -1)
+       if(player.newDirection == -1)
             emitterLeft.emitParticle();
-        else if(playerDirection == 1)
+        else if(player.newDirection == 1)
             emitterRight.emitParticle();
-        else if(playerDirection == 0)
+        else if(player.newDirection == 0)
         {
             emitterLeft.emitParticle();
             emitterRight.emitParticle();
@@ -386,13 +385,13 @@ function update () {
         }
     }*/
     
-    if(game.input.activePointer.isDown && gameOver != 1)
+    if(game.input.activePointer.isDown && player.alive)
     {
          preFire(fireMode);
          
     }
     
-   if(hit == 1 && lives.countLiving() >= 1)
+   if(player.hit == 1 && player.lives.countLiving() >= 1)
     {
        if(flashPlayer > 5)
         {
@@ -406,7 +405,7 @@ function update () {
         }
         
     }
-    if(hit == 0 && player.visible == false && gameOver == 0)
+    if(player.hit == 0 && player.visible == false && player.alive)
     {
         player.visible = true;
     }
@@ -446,10 +445,9 @@ function render() {
       //a  game.debug.text('Time until event: ' + gameStartTimer.duration.toFixed(0), 32, 32);
    // game.debug.text('Loop Count: ' + totalEnemies, 32, 64);
        //game.debug.spriteInfo(explosion, 32, 32);
-       game.debug.body(player);
-       game.debug.body(pauseButton);
-       game.debug.body(moveableShield);
-        enemies.forEach(showEnemyBox, this);
+//       game.debug.body(player);
+ //      game.debug.body(moveableShield);
+ //       enemies.forEach(showEnemyBox, this);
    // game.debug.text('Game time now: ' + game.time.now, 32, 32);
 }
 
@@ -669,10 +667,10 @@ function collisionHandler (bullet, enemy) {
     enemy.kill();
     
     barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
-    if(enemies.countDead() == totalEnemies && lives.countLiving() < 1)
+    if(enemies.countDead() == totalEnemies && player.lives.countLiving() < 1)
     {
-        style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
+        var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+        var text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
     }
     else if(enemies.countDead() == totalEnemies)
     {
@@ -681,7 +679,7 @@ function collisionHandler (bullet, enemy) {
    //    var textWinner = "You have won.";
     //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
     var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
-    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 100, 'restartButton', restart, this, 2, 1, 0);
+    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 110, 'restartButton', restart, this, 2, 1, 0);
     reButton.anchor.setTo(0.5, 0.5);
     }
 }
@@ -706,8 +704,8 @@ function playerHit (player, enemy) {
     
     
     
-    hit = 1; // Indicates that the player has been hit
-    var lifeHeart = lives.getFirstAlive();
+    player.hit = 1; // Indicates that the player has been hit
+    var lifeHeart = player.lives.getFirstAlive();
     
     if(lifeHeart && hittable === true) // If the player has a life, it will be removed
      {
@@ -716,26 +714,25 @@ function playerHit (player, enemy) {
       }
       checkPlayerCollision = 0;
                                                                                 
-      if(lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
+      if(player.lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
          var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
          var explode = playerDeath.animations.add('playerBoom');
-        explode.onComplete.add(function() {
+         explode.onComplete.add(function() {
             playerDeath.kill();
-        });
-      playerDeath.animations.play('playerBoom', 15);
-      player_death.play();
-      player.kill();
-      gameOver = 1;
-      
-      style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-    //  text = game.add.text(0,0, "GAME OVER", style);
-   // var textToAdd = "GAME OVER";
-     //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
-    var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
-    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 200, 'restartButton', restart, this, 2, 1, 0);
-    reButton.anchor.setTo(0.5, 0.5);
-    enemies.setAll('body.velocity.x', 850);
+         });
+         playerDeath.animations.play('playerBoom', 15);
+         player_death.play();
+         player.kill();
+          
+         var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+        //  text = game.add.text(0,0, "GAME OVER", style);
+       // var textToAdd = "GAME OVER";
+         //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
+         var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
+         var reButton = game.add.button(gameWidth/2, gameHeight/2 + 210, 'restartButton', restart, this, 2, 1, 0);
+         reButton.anchor.setTo(0.5, 0.5);
+         enemies.setAll('body.velocity.x', 850);
 
 
      }
@@ -743,8 +740,7 @@ function playerHit (player, enemy) {
 
 
 function resetHit () {
-    hit = 0;
-    console.log("Reseting playerHit timer");
+    player.hit = 0;
     game.time.events.remove(hitTimer);
 }
 
@@ -872,7 +868,7 @@ function spawnBR(enemyCount){
 }
 
 function countDown(time){
-    var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+    var style = { font: "bold 64px Arial", fill: "#1dc300", boundsAlignH: "center", boundsAlignV: "middle"};
   //alert("countDown is being called");
     var text = game.add.text(gameWidth/2, gameHeight/2, time, style);
     text.lifespan = 965;
