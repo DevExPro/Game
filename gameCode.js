@@ -23,22 +23,26 @@ function preload () {
   game.load.image('playerShield', 'images/shield.png');
   game.load.image('powerEnemy', 'images/Ship4.png');
   game.load.image('shieldMove', 'images/shieldMove.png');
+  game.load.spritesheet('bomb', 'images/bomb2.png', 23, 25, 71);
+  game.load.spritesheet('muteButton', 'images/muteButton.png', 36, 36, 2);
+  
   game.load.audio('blaster', 'sounds/blaster.mp3');
   game.load.audio('player_death', 'sounds/player_death.wav');
   game.load.audio('enemy_death', 'sounds/alien_death1.wav');
-      
-
+  game.load.audio('pickup', 'sounds/pickup.wav');
+  game.load.audio('menuSound', 'sounds/menu_switch.mp3');    
+  game.load.audio('hitSound', 'sounds/menu_select.mp3');
+  game.load.audio('countSound', 'sounds/numkey.wav');
 }
 
 var bulletTime = 0;
 var bullet;
-var pauseButton;
+var pauseButton, muteButton, unmuteButton;
 var explosion;
+var pickup, menuSound, hitSound, blaster, countSound, player_death, enemy_death;
 var player;
 var timer;
-var blaster;
-var player_death;
-var enemy_death;
+
 var powerUp;
 var shootTimer;
 var fireMode;
@@ -49,7 +53,6 @@ var restart;
 var gameStartTimer;
 var totalEnemies;
 var pausePressed;
-var hittable = true;
 
 function create () {
     
@@ -58,6 +61,7 @@ function create () {
     var titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playButton.anchor.setTo(0.5, 0.5);
+    playButton.hitArea = new Phaser.Rectangle(0, 0, 182, 52);
     
     game.paused = true;
     game.input.onDown.add(play, self);
@@ -100,10 +104,18 @@ function create () {
     game.physics.arcade.enableBody(moveItShield);
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     player.oldDirection = player.rotation;
+    player.hittable = true;
+    
+    
+    bombSprite = game.add.sprite(200, 300, 'bomb');
+    bombSprite.anchor.setTo(0.5, 0.5);
+    boomBomb = bombSprite.animations.add('boom');
+    bombSprite.animations.play('boom', 12, false);
+    bombSprite.lifespan = 5900;
     
     /////////////// Pause Button ////////////////////
     pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
- //   pauseButton.enableBody = true;
+    pauseButton.hitArea = new Phaser.Rectangle(10, 20, 36, 36);
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
    // pauseButton.anchor.setTo(1, 1);
     pauseButton.onInputOver.add(over, this);
@@ -118,15 +130,18 @@ function create () {
                 
             }
         }
+    ////////////// Mute Button //////////////////////
     
-
+    muteButton = game.add.button(gameWidth - 45, gameHeight - 100, 'muteButton', muteGame, this);
+    muteButton.hitArea = new Phaser.Rectangle(10, 20, 36, 36);
+    //muteButton.anchor.setTo(0, 0.5);
 
 
   ///////////////// Player Lives Section ///////////
     player.lives = game.add.group();
-    var life = player.lives.create(74, gameHeight - 31, 'heart');
-    life = player.lives.create(42, gameHeight - 31, 'heart');
-    life = player.lives.create(9, gameHeight - 31, 'heart');
+    var life = player.lives.create(74, gameHeight - 35, 'heart');
+    life = player.lives.create(42, gameHeight - 35, 'heart');
+    life = player.lives.create(9, gameHeight - 35, 'heart');
     life = player.lives.create(0, 0);
 
 
@@ -198,7 +213,7 @@ function create () {
     
   ////////////// Player Attributes Sction /////////////////
     player.hit = 0;
-    flashPlayer = 0;
+    player.flash = 0;
 
     //game.camera.follow(player);
     cursors = game.input.keyboard.createCursorKeys();
@@ -264,7 +279,9 @@ function create () {
     blaster = game.add.audio('blaster');
     player_death = game.add.audio('player_death');
     enemy_death = game.add.audio('enemy_death');
-    
+    hitSound = game.add.audio('hitSound');
+    pickup = game.add.audio('pickup');
+    countSound = game.add.audio('countSound');
 }
 
 
@@ -278,6 +295,15 @@ function update () {
 //   game.physics.arcade.overlap(player, pickShield, shieldPower, null, this);
    game.physics.arcade.overlap(player, moveItShield, moveShield, null, this);
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
+   
+   if(bombSprite.isFinished && bombSprite.alive)
+   {
+       var boom = game.add.sprite(200, 300, 'playerExplode');
+       boom.anchor.setTo(0.5, 0.5);
+       var explode = explosion.animations.add('boomExplode');
+       explosion.animations.play('boomExplode', 15, true);
+       bombSprite.kill();
+   }
 
 
 //    if(gameOver == 0)
@@ -393,15 +419,15 @@ function update () {
     
    if(player.hit == 1 && player.lives.countLiving() >= 1)
     {
-       if(flashPlayer > 5)
+       if(player.flash > 5)
         {
             player.visible = false;
-            flashPlayer = 0;
+            player.flash = 0;
         }
        else
         {
             player.visible = true;
-            ++flashPlayer;
+            ++player.flash;
         }
         
     }
@@ -424,7 +450,7 @@ function removeMoveShield () {
 }
 
 function shieldPower (player, pickShield) {
-    hittable = false;
+    player.hittable = false;
     pickShield.kill();
     shield.visible = true;
     shieldTimer = game.time.events.add(Phaser.Timer.SECOND * 20, removeShield, this);
@@ -432,7 +458,7 @@ function shieldPower (player, pickShield) {
 
 function removeShield () {
     shield.visible = false;
-    hittable = true;
+    player.hittable = true;
     game.time.events.remove(shieldTimer);
 }
 
@@ -470,6 +496,7 @@ function showEnemyBox(enemy) {
     function actionOnClick (){
     
         pausePressed = true;
+        
        // create();
         game.paused = true;
     }
@@ -480,10 +507,10 @@ function showEnemyBox(enemy) {
     }
     
     function restart(){
-            this.game.destroy();
-            gameOver = 0;
-            fireMode = 1;
-            pausePressed = false;
+        this.game.destroy();
+        gameOver = 0;
+        fireMode = 1;
+        pausePressed = false;
         game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
     }
     
@@ -634,7 +661,7 @@ function resetBullet (bullet) {
 
 function powerBulletCollide(bullet, powerEnemy){
     bullet.kill();
-    
+    enemy_death.play();
     explosion = explosions.getFirstExists(false);
     explosion.reset(powerEnemy.body.x, powerEnemy.body.y);
     var explode = explosion.animations.add('boomExplode');
@@ -681,19 +708,21 @@ function collisionHandler (bullet, enemy) {
     var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
     var reButton = game.add.button(gameWidth/2, gameHeight/2 + 110, 'restartButton', restart, this, 2, 1, 0);
     reButton.anchor.setTo(0.5, 0.5);
+    reButton.hitArea = new Phaser.Rectangle(-100, -11, 220, 60);
     }
 }
 
 
 function getPowerUp(player, power){
     fireMode = game.rnd.integerInRange(2,3);
+    pickup.play();
     power.kill();
 }
 
 
 /////////////////// Life Handler Functions /////////////////////
 function playerHit (player, enemy) {
-    
+    var lives = player.lives.countLiving();
  /*   if(hittable === false && shield.visible === true)
     {
         removeShield();
@@ -707,14 +736,17 @@ function playerHit (player, enemy) {
     player.hit = 1; // Indicates that the player has been hit
     var lifeHeart = player.lives.getFirstAlive();
     
-    if(lifeHeart && hittable === true) // If the player has a life, it will be removed
+    if(lifeHeart && player.hittable === true) // If the player has a life, it will be removed
      {
          lifeHeart.kill();
          hitTimer = game.time.events.add(Phaser.Timer.SECOND * 2.5, resetHit, this); // After 2.5 seconds resethit will be called to stop the
+         if( lives > 1){
+             hitSound.play();
+         }
       }
       checkPlayerCollision = 0;
                                                                                 
-      if(player.lives.countLiving() < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
+      if(lives < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
      {
          var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
          var explode = playerDeath.animations.add('playerBoom');
@@ -732,6 +764,7 @@ function playerHit (player, enemy) {
          var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
          var reButton = game.add.button(gameWidth/2, gameHeight/2 + 210, 'restartButton', restart, this, 2, 1, 0);
          reButton.anchor.setTo(0.5, 0.5);
+         reButton.hitArea = new Phaser.Rectangle(-100, -11, 220, 60);
          enemies.setAll('body.velocity.x', 850);
 
 
@@ -770,6 +803,7 @@ function levelOne(){
     //totalEnemies = 53;
     totalEnemies = 3;
     spawnTL(3);
+    game.time.events.add(3000, powerMove, this);
    /* spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
@@ -872,6 +906,36 @@ function countDown(time){
   //alert("countDown is being called");
     var text = game.add.text(gameWidth/2, gameHeight/2, time, style);
     text.lifespan = 965;
+    game.time.events.add(965, timerSound, this);
 
 }
 
+function timerSound(){
+    countSound.play();
+}
+
+function muteGame(){
+    blaster.mute = true;
+    pickup.mute = true;
+    player_death.mute = true;
+    enemy_death.mute = true;
+    countSound.mute = true;
+    hitSound.mute = true;
+    muteButton.destroy();
+    unmuteButton = game.add.button(gameWidth - 45, gameHeight - 100, 'muteButton', unmuteGame, this);
+    unmuteButton.hitArea = new Phaser.Rectangle(10, 20, 36, 36);
+    unmuteButton.frame = 1;
+}
+
+function unmuteGame(){
+    blaster.mute = false;
+    pickup.mute = false;
+    player_death.mute = false;
+    enemy_death.mute = false;
+    countSound.mute = false;
+    hitSound.mute = false;
+    unmuteButton.destroy();
+    muteButton = game.add.button(gameWidth - 45, gameHeight - 100, 'muteButton', muteGame, this);
+    muteButton.hitArea = new Phaser.Rectangle(10, 20, 36, 36);
+    muteButton.frame = 0;
+}
