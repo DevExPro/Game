@@ -3,6 +3,12 @@ var gameHeight = window.innerHeight - 100;
 
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
+WebFontConfig = {
+    google: {
+      families: ['Audiowide']
+    }   
+}
+
 function preload () {
   game.load.image('background', 'images/back.png');
   game.load.image('bullet', 'images/pewpew2.png');
@@ -15,15 +21,17 @@ function preload () {
   game.load.spritesheet('beam', 'images/laserBeam.png', 40, 16, 11);
   game.load.spritesheet('pauseButton', 'images/pause.png', 36, 36, 2);
   game.load.spritesheet('playerExplode', 'images/playerExplode.png', 100, 100, 8);
-  game.load.spritesheet('playButton', 'images/startButton3.png', 182, 52);
+  game.load.spritesheet('playButton', 'images/startButton.png', 182, 52);
   game.load.image('title', 'images/evasion2.png');
   game.load.image('gameOver', 'images/gameOverTitle.png');
   game.load.image('winTitle', 'images/victory.png');
-  game.load.image('restartButton', 'images/restartButton4.png');
+  game.load.image('restartButton', 'images/restartButton5.png');
   game.load.image('playerShield', 'images/shield.png');
   game.load.image('powerEnemy', 'images/Ship4.png');
   game.load.image('shieldMove', 'images/shieldMove.png');
-  game.load.spritesheet('bomb', 'images/bomb2.png', 23, 25, 71);
+  game.load.spritesheet('bomb', 'images/bomb.png', 33, 38, 71);
+  game.load.image('bombPic', 'images/bomb2.png');
+  game.load.image('numBombIcon', 'images/bomb3.png');
   game.load.spritesheet('muteButton', 'images/muteButton.png', 36, 36, 2);
   
   game.load.audio('blaster', 'sounds/blaster.mp3');
@@ -33,6 +41,8 @@ function preload () {
   game.load.audio('menuSound', 'sounds/menu_switch.mp3');    
   game.load.audio('hitSound', 'sounds/menu_select.mp3');
   game.load.audio('countSound', 'sounds/numkey.wav');
+  
+  game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 }
 
 var bulletTime = 0;
@@ -42,10 +52,11 @@ var explosion;
 var pickup, menuSound, hitSound, blaster, countSound, player_death, enemy_death;
 var player;
 var timer;
-
+var waveTotal;
 var powerUp;
 var shootTimer;
 var fireMode;
+var offset;
 var power;
 var beam;
 var playButton;
@@ -53,6 +64,9 @@ var restart;
 var gameStartTimer;
 var totalEnemies;
 var pausePressed;
+var bombSprite = 0;
+var bombExplode = 0;
+var bombTime = 0;
 
 function create () {
     
@@ -61,7 +75,6 @@ function create () {
     var titleBack = game.add.sprite((gameWidth/2) - 258, 0, 'title');
     playButton = game.add.button(gameWidth/2, gameHeight/2 - 20, 'playButton', play, this, 2, 1, 0);
     playButton.anchor.setTo(0.5, 0.5);
-    playButton.hitArea = new Phaser.Rectangle(0, 0, 182, 52);
     
     game.paused = true;
     game.input.onDown.add(play, self);
@@ -105,16 +118,21 @@ function create () {
     player = game.add.sprite(gameWidth/2, (gameHeight/3)*2, 'ship2');
     player.oldDirection = player.rotation;
     player.hittable = true;
+    player.bombs = 2000;
+    var bombIcon = game.add.sprite(140, gameHeight - 31, 'numBombIcon');
+    numBombs = game.add.text(164, gameHeight - 20, player.bombs);
+    numBombs.anchor.setTo(0, 0.5);
+    numBombs.font = 'Audiowide';
+    numBombs.fontSize = 25;
+    numBombs.fill = '#000000';
+    numBombs.stroke = '#62e308';
+    numBombs.strokeThickness = 1;
     
-    
-    bombSprite = game.add.sprite(200, 300, 'bomb');
-    bombSprite.anchor.setTo(0.5, 0.5);
-    boomBomb = bombSprite.animations.add('boom');
-    bombSprite.animations.play('boom', 12, false);
-    bombSprite.lifespan = 5900;
+    bombPickup = game.add.sprite(200, 300, 'bombPic');
+    game.physics.arcade.enableBody(bombPickup);
     
     /////////////// Pause Button ////////////////////
-    pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 2, 1, 0);
+    pauseButton = game.add.button(gameWidth - 45, gameHeight - 45, 'pauseButton', actionOnClick, this, 1, 0, 1);
     pauseButton.hitArea = new Phaser.Rectangle(10, 20, 36, 36);
     //button = game.add.button(gameWidth/2, gameHeight/2, 'playButton', playClick, this);
    // pauseButton.anchor.setTo(1, 1);
@@ -164,8 +182,8 @@ function create () {
     
     moveableShield = player.addChild(game.make.sprite(0, 0, 'shieldMove'));
     moveableShield.anchor.setTo(0.5, 0.5);
-    game.physics.arcade.enableBody(moveableShield);
-    moveableShield.body.immovable = true;
+ //   game.physics.arcade.enableBody(moveableShield);
+  //  moveableShield.body.immovable = true;
    // moveableShield.body.setSize(43, 43, 21, 21);
     moveableShield.visible = false;
     
@@ -205,7 +223,7 @@ function create () {
    // gameStartTimer.onComplete.add(levelOneTimer.start, this);
    
    powerEnemies = game.add.group();
-   powerEnemies.enableBody =true;
+   powerEnemies.enableBody = true;
    powerEnemies.physicsBodyType = Phaser.Physics.ARCADE;
    
 
@@ -216,7 +234,6 @@ function create () {
     player.flash = 0;
 
     //game.camera.follow(player);
-    cursors = game.input.keyboard.createCursorKeys();
     //game.physics.arcade.enable(player);
     game.world.setBounds(0, 0, gameWidth, gameHeight);
    
@@ -247,6 +264,7 @@ function create () {
    thrustButton = game.input.keyboard.addKey(Phaser.KeyCode.W);
    shieldLeft = game.input.keyboard.addKey(Phaser.KeyCode.A);
    shieldRight = game.input.keyboard.addKey(Phaser.KeyCode.D);
+   spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
    
   ////////////// We are in The Beam ////////////////////////
  /*   beams = game.add.group();
@@ -291,29 +309,31 @@ function create () {
 function update () {
    game.physics.arcade.overlap(bullets, enemies, collisionHandler, null, this);
    game.physics.arcade.overlap(player, powers, getPowerUp, null, this);
+ //  game.physics.arcade.overlap(player, powerEnemies, powerShipCollide, null, this);
    game.physics.arcade.overlap(bullets, powerEnemies, powerBulletCollide, null, this);
 //   game.physics.arcade.overlap(player, pickShield, shieldPower, null, this);
    game.physics.arcade.overlap(player, moveItShield, moveShield, null, this);
    //game.physics.arcade.overlap(beams, enemies, beamCollision, null, this);
+   game.physics.arcade.overlap(player, bombPickup, addInventory, null, this);
+   game.physics.arcade.overlap(enemies, bombSprite, hitBomb, null, this);
+   game.physics.arcade.overlap(enemies, bombExplode, hitBombExplosion, null, this);
    
-   if(bombSprite.isFinished && bombSprite.alive)
-   {
-       var boom = game.add.sprite(200, 300, 'playerExplode');
-       boom.anchor.setTo(0.5, 0.5);
-       var explode = explosion.animations.add('boomExplode');
-       explosion.animations.play('boomExplode', 15, true);
-       bombSprite.kill();
-   }
+   numBombs.kill();
+   numBombs = game.add.text(164, gameHeight - 20, player.bombs);
+    numBombs.anchor.setTo(0, 0.5);
+    numBombs.font = 'Audiowide';
+    numBombs.fontSize = 25;
+    numBombs.fill = '#000000';
+    numBombs.stroke = '#62e308';
+    numBombs.strokeThickness = 1;
 
 
-//    if(gameOver == 0)
-//   enemies.forEach(game.physics.arcade.moveToObject, game.physics.arcade, false, player, 215);
     if(player.alive){
         enemies.forEach(getEnSpeed, this);
         enemies.forEach(rotateEnemies, this);
     }
    
-        player.newDirection = 0;
+       player.newDirection = 0;
        player.rotation = game.physics.arcade.angleToPointer(player);
        if(player.oldDirection - 0.025 <= player.rotation && player.oldDirection + 0.025 >= player.rotation)
        {
@@ -334,6 +354,7 @@ function update () {
  if(player.hit == 0)
    {
         game.physics.arcade.overlap(enemies, player, playerHit, null, this);
+        game.physics.arcade.overlap(player, powerEnemies, playerHit, null, this);
     }
     
     bar.context.clearRect(0,0, bar.width, bar.height);
@@ -379,6 +400,13 @@ function update () {
     {
         moveableShield.angle += 5;
     }
+    
+    if(spaceKey.isDown && player.bombs > 0)
+    {
+        dropBomb();
+    }
+    
+    
     /*if(cursors.left.isUp || cursors.right.isUp)
     {
         if (cursors.left.isDown && cursors.right.isUp)
@@ -438,6 +466,83 @@ function update () {
     
 }
 
+function addInventory (player, bombPickup) {
+    bombPickup.kill();
+    ++player.bombs;
+}
+
+function dropBomb () {
+    
+    if(game.time.now > bombTime)
+    {
+        bombSprite = game.add.sprite(player.body.x, player.body.y, 'bomb');
+        bombSprite.anchor.setTo(0.5, 0.5);
+        game.physics.arcade.enableBody(bombSprite);
+        bombSprite.immovable = true;
+        boomBomb = bombSprite.animations.add('boom');
+        bombSprite.animations.play('boom', 12, false);
+        bombSprite.lifespan = 5900;
+        
+         boomBomb.onComplete.add(function() {
+            bombSprite.kill();
+            bombExplode = game.add.sprite(bombSprite.body.x, bombSprite.body.y, 'playerExplode');
+            game.physics.arcade.enableBody(bombExplode);
+            bombExplode.anchor.setTo(0.5, 0.5);
+            var explode = bombExplode.animations.add('playerBoom');
+            bombExplode.animations.play('playerBoom', 15, false);
+            explode.onComplete.add(function() {
+                bombExplode.kill();
+            });
+         });
+         --player.bombs;
+         bombTime = game.time.now + 500;
+    }
+}
+
+function hitBomb (enemy, bombSprite) {
+    console.log("hitBomb!");
+    bombSprite.kill();
+    bombExplode = game.add.sprite(bombSprite.body.x, bombSprite.body.y, 'playerExplode');
+    bombExplode.anchor.setTo(0.5, 0.5);
+    var explodeBomb = bombExplode.animations.add('playerBoom');
+    bombExplode.animations.play('playerBoom', 15, false);
+    
+    explodeBomb.onComplete.add(function() {
+        bombExplode.kill();
+    });
+    
+    explosion = explosions.getFirstExists(false);
+    explosion.reset(enemy.body.x, enemy.body.y);
+
+    var explode = explosion.animations.add('boomExplode');
+    explosion.animations.play('boomExplode', 15, true);
+    
+    explosion.lifespan = 275;
+    enemy_death.play();
+    enemy.kill();
+    
+    barProgress = ((waveTotal - enemies.countDead() + offset) * barLength) / waveTotal;
+    
+    gameComplete();
+}
+
+function hitBombExplosion (enemy, bombExplode) {
+    console.log("hitBombExplosion");
+    explosion = explosions.getFirstExists(false);
+    explosion.reset(enemy.body.x, enemy.body.y);
+
+    var explode = explosion.animations.add('boomExplode');
+    explosion.animations.play('boomExplode', 15, true);
+    
+    explosion.lifespan = 275;
+    enemy_death.play();
+    enemy.kill();
+    
+    barProgress = ((waveTotal - enemies.countDead() + offset) * barLength) / waveTotal;
+    
+    gameComplete();
+}
+
 function moveShield (player, moveItShield) {
     moveItShield.kill();
     moveableShield.visible = true;
@@ -481,7 +586,7 @@ function render() {
 function getEnSpeed(enemy) {
    if(typeof enemy.inSpeed === 'undefined')
    {
-       enemy.inSpeed = game.rnd.integerInRange(150, 250);
+       enemy.inSpeed = game.rnd.integerInRange(200, 260);
    }
    game.physics.arcade.moveToObject(enemy, player, enemy.inSpeed);
     return enemy.inSpeed;
@@ -673,6 +778,7 @@ function powerBulletCollide(bullet, powerEnemy){
 }
 
 
+
 function collisionHandler (bullet, enemy) {
     var chance = 0;
     bullet.kill();
@@ -693,23 +799,9 @@ function collisionHandler (bullet, enemy) {
     enemy_death.play();
     enemy.kill();
     
-    barProgress = ((totalEnemies - enemies.countDead()) * barLength) / totalEnemies;
-    if(enemies.countDead() == totalEnemies && player.lives.countLiving() < 1)
-    {
-        var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        var text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
-    }
-    else if(enemies.countDead() == totalEnemies)
-    {
-      //  style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-       // text = game.add.text(gameWidth/2, gameHeight/2, "Wiiiiinnnner", style);
-   //    var textWinner = "You have won.";
-    //   var text = game.add.text(gameWidth/2 - textWinner.textWidth/2, gameHeight/2 -textWinner.textHeight/2, textWinner, style);
-    var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
-    var reButton = game.add.button(gameWidth/2, gameHeight/2 + 110, 'restartButton', restart, this, 2, 1, 0);
-    reButton.anchor.setTo(0.5, 0.5);
-    reButton.hitArea = new Phaser.Rectangle(-100, -11, 220, 60);
-    }
+    barProgress = ((waveTotal - enemies.countDead() + offset) * barLength) / waveTotal;
+    
+    gameComplete(); // Checks to see if all enemies have been destroyed - If they have, it displays the victory screen
 }
 
 
@@ -731,8 +823,6 @@ function playerHit (player, enemy) {
         return;
     }*/
     
-    
-    
     player.hit = 1; // Indicates that the player has been hit
     var lifeHeart = player.lives.getFirstAlive();
     
@@ -746,9 +836,23 @@ function playerHit (player, enemy) {
       }
       checkPlayerCollision = 0;
                                                                                 
-      if(lives < 1) // If the player has no more lives remaining, kill the player, and indicate the end of the game
-     {
-         var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
+    gameComplete();
+}
+
+function gameComplete () {
+    var lives = player.lives.countLiving();
+    var deadEnemies = enemies.countDead();
+    var buttonOffset = 0;
+    
+    if(deadEnemies == totalEnemies && lives < 1)
+    {
+        var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
+        var text = game.add.text(gameWidth/2, gameHeight/2, "Totally killing it (from the grave)", style);
+        buttonOffset = 110;
+    }
+    else if(lives < 1)
+    {
+        var playerDeath = game.add.sprite(player.body.x, player.body.y, 'playerExplode');
          var explode = playerDeath.animations.add('playerBoom');
          explode.onComplete.add(function() {
             playerDeath.kill();
@@ -756,21 +860,24 @@ function playerHit (player, enemy) {
          playerDeath.animations.play('playerBoom', 15);
          player_death.play();
          player.kill();
-          
-         var style = { font: "bold 64px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"};
-        //  text = game.add.text(0,0, "GAME OVER", style);
-       // var textToAdd = "GAME OVER";
-         //       var text = game.add.text(gameWidth/2 - textToAdd.textWidth/2, gameHeight/2 -textToAdd.textHeight/2, textToAdd, style);
-         var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
-         var reButton = game.add.button(gameWidth/2, gameHeight/2 + 210, 'restartButton', restart, this, 2, 1, 0);
+        
+        var overTitle = game.add.sprite((gameWidth/2) - 299, (gameHeight/2) - 174, 'gameOver');
+         enemies.setAll('body.velocity.x', 850);
+         buttonOffset = 210;
+    }
+    else if(deadEnemies == totalEnemies)
+    {
+        var winTitle = game.add.sprite((gameWidth/2) - 355, (gameHeight/2) - 81, 'winTitle');
+        buttonOffset = 110;
+    }
+    if(buttonOffset != 0)
+    {
+        var reButton = game.add.button(gameWidth/2, gameHeight/2 + buttonOffset, 'restartButton', restart, this, 2, 1, 0);
          reButton.anchor.setTo(0.5, 0.5);
          reButton.hitArea = new Phaser.Rectangle(-100, -11, 220, 60);
-         enemies.setAll('body.velocity.x', 850);
-
-
-     }
+         game.time.removeAll();
+    }
 }
-
 
 function resetHit () {
     player.hit = 0;
@@ -800,11 +907,13 @@ function spawnEnemy (x, y){
 
 
 function levelOne(){
-    //totalEnemies = 53;
-    totalEnemies = 3;
+    totalEnemies = 55;
+    offset = 0;
+    //totalEnemies = 3;
+    waveTotal = 43;
     spawnTL(3);
     game.time.events.add(3000, powerMove, this);
-   /* spawnBL(3);
+    spawnBL(3);
     game.time.events.add(6000, spawnBL, this, 3);
     game.time.events.add(6000, spawnBR, this, 3);
     game.time.events.add(9000, powerMove, this);
@@ -814,18 +923,26 @@ function levelOne(){
     game.time.events.add(18000, spawnML, this, 3);
     game.time.events.add(18000, spawnMR, this, 3);
     game.time.events.add(18000, spawnBM, this, 3);
-    game.time.events.add(18000, spawnTM, this, 4);
-    game.time.events.add(18000, spawnTL, this, 4);
-    game.time.events.add(18000, spawnTR, this, 4);
-    game.time.events.add(18000, spawnBL, this, 4);
-    game.time.events.add(18000, spawnBR, this, 4);*/
-      
-
-
+    game.time.events.add(18000, spawnTM, this, 2);
+    game.time.events.add(18000, spawnTL, this, 2);
+    game.time.events.add(18000, spawnTR, this, 2);
+    game.time.events.add(18000, spawnBL, this, 2);
+    game.time.events.add(18000, spawnBR, this, 2);
+    game.time.events.add(26000, levelTwo, this);
+    
 }
 
 function levelTwo(){
-    
+    waveTotal = 16;
+    offset = 43;
+    spawnML(2);
+    spawnMR(2);
+    game.time.events.add(2000, spawnTR, this, 2);
+    game.time.events.add(2000, spawnBL, this, 2);
+    game.time.events.add(3000, spawnML, this, 2);
+    game.time.events.add(3000, spawnMR, this, 2);
+    game.time.events.add(4000, spawnBL, this, 2);
+    game.time.events.add(4000, spawnTR, this, 2);
 }
 
 function powerSpawn(itteration, enemyCount){
@@ -904,7 +1021,13 @@ function spawnBR(enemyCount){
 function countDown(time){
     var style = { font: "bold 64px Arial", fill: "#1dc300", boundsAlignH: "center", boundsAlignV: "middle"};
   //alert("countDown is being called");
-    var text = game.add.text(gameWidth/2, gameHeight/2, time, style);
+    var text = game.add.text(gameWidth/2, gameHeight/2, time);
+    text.anchor.setTo(0.5, 0.5);
+    text.font = 'Audiowide';
+    text.fontSize = 64;
+    text.fill = '#000000';
+    text.stroke = '#62e308';
+    text.strokeThickness = 1;
     text.lifespan = 965;
     game.time.events.add(965, timerSound, this);
 
